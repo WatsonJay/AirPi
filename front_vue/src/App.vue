@@ -1,12 +1,49 @@
 <template>
   <div id="app">
     <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
+      <v-touch v-on:swipeleft="swiperleft" v-on:swiperight="swiperright" class="wrapper">
+        <router-view />
+      </v-touch>
     </div>
-    <router-view/>
   </div>
 </template>
+
+<script>
+
+export default {
+  methods:{
+    swiperright: function () { //右滑切换到detail页
+      if (this.$route.path == '/clock') {
+        this.$router.replace({'path': '/dashboard'});
+        return
+      }
+      if (this.$route.path == '/dashboard') {
+        this.$router.replace({'path': '/historyChart'});
+        return
+      }
+      if (this.$route.path == '/historyChart'){
+        this.$router.replace({'path':'/clock'});
+        return
+      }
+    },
+    swiperleft: function () { //右滑切换到detail页
+      if (this.$route.path == '/clock'){
+        this.$router.replace({'path':'/historyChart'});
+        return
+      }
+      if (this.$route.path == '/historyChart'){
+        this.$router.replace({'path':'/dashboard'});
+        return
+      }
+      if (this.$route.path == '/dashboard'){
+        this.$router.replace({'path':'/clock'});
+        return
+      }
+    }
+  }
+
+}
+</script>
 
 <style>
 #app {
@@ -14,11 +51,8 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
+  height: 100%;
   color: #2c3e50;
-}
-
-#nav {
-  padding: 30px;
 }
 
 #nav a {
