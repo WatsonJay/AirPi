@@ -13,13 +13,13 @@ export default {
   },
   data () {
     return {
-      allHeight: document.body.clientHeight - 20
+      allHeight: document.body.clientHeight
     }
   },
   mounted() {
     const that = this
     window.onresize = () => {
-      that.allHeight = document.body.clientHeight - 20
+      that.allHeight = document.body.clientHeight
     }
   }
 }
@@ -29,5 +29,12 @@ export default {
 .clock-container {
   display: flex;
   align-items: center;
+  font: normal 12px 'Helvetica Neue', Helvetica, sans-serif;
+  user-select: none;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.3);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 </style>
