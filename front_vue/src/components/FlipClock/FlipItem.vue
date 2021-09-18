@@ -50,7 +50,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-$width: 30px;
+$width: 60px;
 $height: 90px;
 $fontSize: 80px;
 $lineWidth: 3px;
@@ -68,7 +68,7 @@ $radius: 6px;
   .item {
     list-style: none;
     z-index: 1;
-    position: absolute;
+      position: absolute;
     left: 0;
     top: 0;
     width: 100%;

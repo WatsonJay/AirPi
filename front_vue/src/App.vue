@@ -13,20 +13,6 @@
 export default {
   methods:{
     swiperright: function () { //右滑切换到detail页
-      if (this.$route.path == '/clock') {
-        this.$router.replace({'path': '/dashboard'});
-        return
-      }
-      if (this.$route.path == '/dashboard') {
-        this.$router.replace({'path': '/historyChart'});
-        return
-      }
-      if (this.$route.path == '/historyChart'){
-        this.$router.replace({'path':'/clock'});
-        return
-      }
-    },
-    swiperleft: function () { //右滑切换到detail页
       if (this.$route.path == '/clock'){
         this.$router.replace({'path':'/historyChart'});
         return
@@ -36,6 +22,20 @@ export default {
         return
       }
       if (this.$route.path == '/dashboard'){
+        this.$router.replace({'path':'/clock'});
+        return
+      }
+    },
+    swiperleft: function () { //右滑切换到detail页
+      if (this.$route.path == '/clock') {
+        this.$router.replace({'path': '/dashboard'});
+        return
+      }
+      if (this.$route.path == '/dashboard') {
+        this.$router.replace({'path': '/historyChart'});
+        return
+      }
+      if (this.$route.path == '/historyChart'){
         this.$router.replace({'path':'/clock'});
         return
       }
