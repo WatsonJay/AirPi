@@ -2,49 +2,82 @@
   <div :style="{height:allHeight+ 'px', width: allWidth + 'px', margin: '10px 20px', position: 'absolute'}">
     <a-row>
       <a-col :span="11">
-        <a-row>
-          <a-col :span="12">
-            <div style="float: left; border-radius: 6px; padding: 0 5px"
-                 :style="{width: allWidth * 0.12 + 'px',height: allHeight * 0.12 + 'px',
+        <a-row :gutter="10">
+          <a-col :span="8">
+            <div style="float: left; border-radius: 6px; padding: 0 5px; box-shadow: 3px 2px 6px #343a40;"
+                 :style="{width: allWidth * 0.15 + 'px',height: allHeight * 0.15 + 'px',
                           color: AQIStyle.color, background: AQIStyle.background}">
-              <span class="AQItext" style="text-align: left" :style="{'font-size': allHeight * 0.03 + 'px'}">空气质量指数</span>
-              <span class="AQItext" style="text-align: right" :style="{'font-size': allHeight * 0.06 + 'px'}">{{AQI}}</span>
+              <span style="text-align: left" :style="{'font-size': allHeight * 0.035 + 'px'}">空气质量指数</span>
+              <span class="number" style="text-align: right;display: block" :style="{'font-size': allHeight * 0.1 + 'px', 'line-height': allHeight * 0.08 + 'px'}">{{AQI}}</span>
             </div>
           </a-col>
-          <a-col :span="11">
-            <div style="display: block">
-              <span class="numberTitle" :style="{'--div-height': allHeight * 0.05 + 'px', '--font-height': allHeight * 0.05 + 'px'}">温度</span>
-              <span class="numberTitle" :style="{'--div-height': allHeight * 0.06 + 'px', '--font-height': allHeight * 0.06 + 'px'}" style="float: right">{{temp}} ℃</span>
+          <a-col :span="4">
+
+          </a-col>
+          <a-col :span="6" >
+            <div style="background: hsla(0,0%,100%,.2); border-radius: 6px">
+              <span class="numberTitle" :style="{'font-size': allHeight * 0.035 + 'px'}">温度</span>
+              <div>
+                <span class="number" :style="{'font-size': allHeight * 0.1 + 'px', 'line-height': allHeight * 0.08 + 'px'}">{{temp}}</span>
+                <span style="color: #c5f6fa"> ℃</span>
+              </div>
             </div>
-            <div style="display: block">
-              <span class="numberTitle" :style="{'--div-height': allHeight * 0.05 + 'px', '--font-height': allHeight * 0.05 + 'px'}">湿度</span>
-              <span class="numberTitle" :style="{'--div-height': allHeight * 0.06 + 'px', '--font-height': allHeight * 0.06 + 'px'}" style="float: right">{{hum}} %</span>
+          </a-col>
+          <a-col :span="6">
+            <div style="background: hsla(0,0%,100%,.2); border-radius: 6px">
+              <span class="numberTitle" :style="{'font-size': allHeight * 0.035 + 'px'}">湿度</span>
+              <div>
+                <span class="number" :style="{'font-size': allHeight * 0.1 + 'px', 'line-height': allHeight * 0.08 + 'px'}">{{hum}}</span>
+                <span style="color: #c5f6fa"> %</span>
+              </div>
             </div>
           </a-col>
         </a-row>
-        <v-chart autoresize :option="optionHCHO" :style="{height: allHeight * 0.88 + 'px'}"/>
+        <v-chart autoresize :option="optionHCHO" :style="{height: allHeight * 0.80 + 'px'}" style="border-radius: 6px; margin-top: 8px"/>
       </a-col>
       <a-col :span="13">
-        <a-row>
-          <a-col :span="8">
-            <a-progress type="circle" :percent="pm2" :strokeColor="strokeColor" :width="allHeight * 0.22">
-              <template #format="percent">
-                <span style="color: red">{{ percent }}</span>
-              </template>
-            </a-progress>
-            <span>pm2.5</span>
-          </a-col>
-          <a-col :span="8">
-            <a-progress type="circle" :percent="pm5" :stroke-color="strokeColor" :width="allHeight * 0.22"></a-progress>
-            <span style="display: block">pm5</span>
-          </a-col>
-          <a-col :span="8">
-            <a-progress type="circle" :percent="pm10" :stroke-color="strokeColor" :width="allHeight * 0.22"></a-progress>
-            <span>pm10</span>
-          </a-col>
-        </a-row>
-        <v-chart autoresize :option="optionCO2" :style="{height: allHeight * 0.33 + 'px'}"></v-chart>
-        <v-chart autoresize :option="optionHCHO" :style="{height: allHeight * 0.33 + 'px'}"></v-chart>
+        <v-chart autoresize :option="optionCO2" :style="{height: allHeight * 0.38 + 'px'}"></v-chart>
+        <v-chart autoresize :option="optionTVOC" :style="{height: allHeight * 0.38 + 'px'}"></v-chart>
+        <div style="margin: 10px">
+          <a-row :gutter="10">
+            <a-col :span="8">
+              <div class="PmDiv" :style="{height: allHeight * 0.19 + 'px', width: allWidth * 0.14 + 'px'}">
+                <div style="background: #868e96; border-radius: 5px 5px 0 0 ;color: white">
+                  <span>PM2.5</span>
+                </div>
+                <div style="color: #c5f6fa">
+                  <span class="number" :style="{'font-size': allHeight * 0.07 + 'px', 'line-height': allHeight * 0.1 + 'px'}">{{pmValue.pm2}}</span>
+                  <span> ㎍/㎥</span>
+                </div>
+                <div style="width: 80%;margin: 0 auto;border-radius: 2px" :style="{'border-bottom': '4px solid '+ this.pmColor.pm2}" ></div>
+              </div>
+            </a-col>
+            <a-col :span="8">
+              <div class="PmDiv" :style="{height: allHeight * 0.19 + 'px', width: allWidth * 0.14 + 'px'}">
+                <div style="background: #868e96; border-radius: 5px 5px 0 0 ;color: white">
+                  <span>PM5</span>
+                </div>
+                <div style="color: #c5f6fa">
+                  <span class="number" :style="{'font-size': allHeight * 0.07 + 'px', 'line-height': allHeight * 0.1 + 'px'}">{{pmValue.pm5}}</span>
+                  <span> ㎍/㎥</span>
+                </div>
+                <div style="width: 80%;margin: 0 auto;border-radius: 2px" :style="{'border-bottom': '4px solid '+ this.pmColor.pm5}" ></div>
+              </div>
+            </a-col>
+            <a-col :span="8">
+              <div class="PmDiv" :style="{height: allHeight * 0.19 + 'px', width: allWidth * 0.14 + 'px'}">
+                <div style="background: #868e96; border-radius: 5px 5px 0 0 ;color: white">
+                  <span>PM10</span>
+                </div>
+                <div style="color: #c5f6fa">
+                  <span class="number" :style="{'font-size': allHeight * 0.07 + 'px', 'line-height': allHeight * 0.1 + 'px'}">{{pmValue.pm10}}</span>
+                  <span> ㎍/㎥</span>
+                </div>
+                <div style="width: 80%;margin: 0 auto;border-radius: 2px" :style="{'border-bottom': '4px solid '+ this.pmColor.pm10}" ></div>
+              </div>
+            </a-col>
+          </a-row>
+        </div>
       </a-col>
     </a-row>
   </div>
@@ -57,14 +90,24 @@ export default {
     return {
       allHeight: document.body.clientHeight - 20,
       allWidth: document.body.clientWidth - 40,
-      temp: 0,
-      hum: 0,
+      temp: 33,
+      hum: 99,
       AQI: 0,
       pm2: 21,
       pm5: 100,
       pm10: 55,
-      strokeColor: "{'0%': '#73d13d','50%': '#87d068', '100%': '#ff4d4f'}",
-      AQIStyle: {color: 'white', background: 'green'},
+      AQIStyle: {color: 'white', background: '#FF7E00'},
+      pmColor: {
+        pm2: '#7E0023',
+        pm5: '#FFFF00',
+        pm10: '#00E400'
+      },
+      pmValue: {
+        pm2: 9999,
+        pm5: 9999,
+        pm10: 9999
+      },
+      AQILevel: ['#00E400', '#FFFF00', '#FF7E00', '#FF0000', '#99004C', '#7E0023'],
       optionHCHO: {},
       optionCO2: {},
       optionPM2: {},
@@ -73,15 +116,28 @@ export default {
       optionTVOC: {},
     }
   },
+  computed: {
+    // getPM2BackgroundString(){
+    //   return 'linear-gradient(to top, '+ this.pmColor.pm2 +', #bdc3c7)'
+    // },
+    // getPM5BackgroundString(){
+    //   return 'linear-gradient(to top, '+ this.pmColor.pm5 +', #bdc3c7)'
+    // },
+    // getPM10BackgroundString(){
+    //   return 'linear-gradient(to top, '+ this.pmColor.pm10 +', #bdc3c7)'
+    // }
+  },
   mounted() {
     const that = this
     this.reDrawHCHOChart()
     this.reDrawCO2()
+    this.reDrawTVOC()
     window.onresize = () => {
       that.allHeight = document.body.clientHeight - 20
       that.allWidth = document.body.clientWidth - 40
       that.reDrawHCHOChart()
       that.reDrawCO2()
+      that.reDrawTVOC()
     }
   },
   methods: {
@@ -101,11 +157,11 @@ export default {
             lineStyle: {
               width: document.body.clientHeight * 0.02,
               color: [
-                [0.1, '#73d13d'],
+                [0.1, '#00E400'],
                 [0.2, '#69c0ff'],
-                [0.4, '#ffec3d'],
-                [0.6, '#ff7a45'],
-                [1, '#ff4d4f']
+                [0.4, '#FFFF00'],
+                [0.6, '#FF7E00'],
+                [1, '#FF0000']
               ]
             }
           },
@@ -176,7 +232,7 @@ export default {
         series: [{
           type: 'gauge',
           center: ["30%", "70%"],
-          radius: '130%',
+          radius: '100%',
           startAngle: 200,
           endAngle: -20,
           min: 400,
@@ -184,11 +240,11 @@ export default {
           splitNumber: 8,
           axisLine: {
             lineStyle: {
-              width: 10,
+              width: 14,
               color: [
-                [0.25, '#73d13d'],
-                [0.5, '#ffec3d'],
-                [1, '#fd666d']
+                [0.25, '#00E400'],
+                [0.5, '#FFFF00'],
+                [1, '#FF0000']
               ]
             }
           },
@@ -198,7 +254,7 @@ export default {
             }
           },
           axisTick: {
-            distance: -10,
+            distance: -14,
             length: 5,
             lineStyle: {
               color: '#fff',
@@ -206,31 +262,103 @@ export default {
             }
           },
           splitLine: {
-            distance: -8,
-            length: 12,
+            distance: -14,
+            length: 14,
             lineStyle: {
               color: '#fff',
               width: 2
             }
           },
           axisLabel: {
-            fontSize: 0
+            distance: -22,
+            fontSize: 10,
+            color: 'auto'
           },
           detail: {
             valueAnimation: true,
             fontSize: 20,
-            offsetCenter: ['210%', '-50%'],
+            offsetCenter: ['260%', '-30%'],
             formatter: '{value} PPM',
             color: 'auto'
           },
           title: {
-            offsetCenter: ['220%', 0],
+            offsetCenter: ['240%', 0],
             color: '#bfbfbf',
             fontSize: document.body.clientHeight * 0.05,
           },
           data: [{
             value: 800,
             name: '二氧化碳(CO2)'
+          }]
+        }]
+      }
+    },
+    reDrawTVOC() {
+      this.optionTVOC = {
+        series: [{
+          type: 'gauge',
+          center: ["70%", "70%"],
+          radius: '100%',
+          startAngle: 200,
+          endAngle: -20,
+          min: 0,
+          max: 0.5,
+          splitNumber: 10,
+          axisLine: {
+            lineStyle: {
+              width: 14,
+              color: [
+                [0.1, '#00E400'],
+                [0.2, '#69c0ff'],
+                [0.4, '#FFFF00'],
+                [0.6, '#FF7E00'],
+                [1, '#FF0000']
+              ]
+            }
+          },
+          pointer: {
+            itemStyle: {
+              color: 'auto'
+            }
+          },
+          axisTick: {
+            distance: -14,
+            length: 5,
+            lineStyle: {
+              color: '#fff',
+              width: 1
+            }
+          },
+          splitLine: {
+            distance: -14,
+            length: 14,
+            lineStyle: {
+              color: '#fff',
+              width: 2
+            }
+          },
+          axisLabel: {
+            distance: -20,
+            fontSize: 10,
+            color: 'auto'
+          },
+          detail: {
+            valueAnimation: true,
+            fontSize: 20,
+            offsetCenter: ['-235%', '-35%'],
+            formatter: function (value) {
+              return value.toFixed(3) + 'mg/m³';
+            },
+            color: 'auto'
+          },
+          title: {
+            offsetCenter: ['-240%', 0],
+            color: '#bfbfbf',
+            fontSize: document.body.clientHeight * 0.05,
+          },
+          data: [{
+            value: 0.10,
+            name: '挥发气体(TVOC)'
           }]
         }]
       }
@@ -241,14 +369,12 @@ export default {
 
 <style scoped>
 .number {
-  color: rgb(236,237,233);
-  font-size: var(--div-height);
-  /*font-family: "digital-7";*/
+  color: #e9ecef;
+  text-shadow: 1px 1px 5px #3498db;
+  font-family: "digital-7";
 }
 .numberTitle {
-  color: rgb(236,237,233);
-  font-size: var(--font-height);
-  line-height: var(--div-height);
+  color: #e9ecef;
 }
 .AQItext {
   display: block;
@@ -273,5 +399,10 @@ export default {
 }
 .ant-carousel >>> .custom-slick-arrow:hover {
   opacity: 0.5;
+}
+.PmDiv {
+  border-radius: 5px;
+  box-shadow: 3px 2px 6px #343a40;
+  background: hsla(0,0%,100%,.2);
 }
 </style>

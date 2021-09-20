@@ -2,7 +2,7 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
-import { Col, Row, message, Progress } from 'ant-design-vue';
+import { Col, Row, message } from 'ant-design-vue';
 import 'ant-design-vue/dist/antd.css';
 import ECharts from 'vue-echarts'
 import { use } from 'echarts/core'
@@ -15,7 +15,6 @@ var VueTouch = require('vue-touch')
 Vue.use(VueTouch, {name: 'v-touch'})
 Vue.use(Col)
 Vue.use(Row)
-Vue.use(Progress)
 
 // import ECharts modules manually to reduce bundle size
 import {
