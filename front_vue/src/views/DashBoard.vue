@@ -2,10 +2,11 @@
   <div :style="{height:allHeight+ 'px', width: allWidth + 'px', margin: '10px 20px', position: 'absolute'}">
     <a-row>
       <a-col :span="11">
+        <v-chart autoresize :option="optionHCHO" :style="{height: allHeight * 0.77 + 'px'}" style="border-radius: 6px; margin-top: 8px"/>
         <a-row :gutter="10">
           <a-col :span="8">
             <div style="float: left; border-radius: 6px; padding: 0 5px; box-shadow: 3px 2px 6px #343a40;"
-                 :style="{width: allWidth * 0.15 + 'px',height: allHeight * 0.15 + 'px',
+                 :style="{width: allWidth * 0.15 + 'px',height: allHeight * 0.18 + 'px',
                           color: AQIStyle.color, background: AQIStyle.background}">
               <span style="text-align: left" :style="{'font-size': allHeight * 0.035 + 'px'}">空气质量指数</span>
               <span class="number" style="text-align: right;display: block" :style="{'font-size': allHeight * 0.1 + 'px', 'line-height': allHeight * 0.08 + 'px'}">{{AQI}}</span>
@@ -16,24 +17,29 @@
           </a-col>
           <a-col :span="6" >
             <div style="background: hsla(0,0%,100%,.2); border-radius: 6px">
-              <span class="numberTitle" :style="{'font-size': allHeight * 0.035 + 'px'}">温度</span>
+<!--              <span class="numberTitle" :style="{'font-size': allHeight * 0.035 + 'px'}">温度</span>-->
+              <div style="background: #868e96; border-radius: 5px 5px 0 0 ;color: white">
+                <span>温度</span>
+              </div>
               <div>
-                <span class="number" :style="{'font-size': allHeight * 0.1 + 'px', 'line-height': allHeight * 0.08 + 'px'}">{{temp}}</span>
+                <span class="number" :style="{'font-size': allHeight * 0.12 + 'px', 'line-height': allHeight * 0.13 + 'px'}">{{temp}}</span>
                 <span style="color: #c5f6fa"> ℃</span>
               </div>
             </div>
           </a-col>
           <a-col :span="6">
             <div style="background: hsla(0,0%,100%,.2); border-radius: 6px">
-              <span class="numberTitle" :style="{'font-size': allHeight * 0.035 + 'px'}">湿度</span>
+<!--              <span class="numberTitle" :style="{'font-size': allHeight * 0.035 + 'px'}">湿度</span>-->
+              <div style="background: #868e96; border-radius: 5px 5px 0 0 ;color: white">
+                <span>湿度</span>
+              </div>
               <div>
-                <span class="number" :style="{'font-size': allHeight * 0.1 + 'px', 'line-height': allHeight * 0.08 + 'px'}">{{hum}}</span>
+                <span class="number" :style="{'font-size': allHeight * 0.12 + 'px', 'line-height': allHeight * 0.13 + 'px'}">{{hum}}</span>
                 <span style="color: #c5f6fa"> %</span>
               </div>
             </div>
           </a-col>
         </a-row>
-        <v-chart autoresize :option="optionHCHO" :style="{height: allHeight * 0.80 + 'px'}" style="border-radius: 6px; margin-top: 8px"/>
       </a-col>
       <a-col :span="13">
         <v-chart autoresize :option="optionCO2" :style="{height: allHeight * 0.38 + 'px'}"></v-chart>
@@ -166,22 +172,27 @@ export default {
             }
           },
           pointer: {
+            icon: 'path://M12.8,0.7l12,40.1H0.7L12.8,0.7z',
+            length: '20%',
+            width: 15,
+            offsetCenter: [0, '-45%'],
             itemStyle: {
               color: 'auto'
             }
           },
           axisTick: {
             length: document.body.clientHeight * 0.02,
+            splitNumber: 2,
             lineStyle: {
               color: 'auto',
-              width: document.body.clientHeight * 0.003,
+              width: document.body.clientHeight * 0.002,
             }
           },
           splitLine: {
-            length: document.body.clientHeight * 0.04,
+            length: document.body.clientHeight * 0.03,
             lineStyle: {
               color: 'auto',
-              width: document.body.clientHeight * 0.008,
+              width: document.body.clientHeight * 0.006,
             }
           },
           axisLabel: {
@@ -272,7 +283,7 @@ export default {
           axisLabel: {
             distance: -22,
             fontSize: 10,
-            color: 'auto'
+            color: '#e9ecef'
           },
           detail: {
             valueAnimation: true,
@@ -340,7 +351,7 @@ export default {
           axisLabel: {
             distance: -20,
             fontSize: 10,
-            color: 'auto'
+            color: '#e9ecef'
           },
           detail: {
             valueAnimation: true,
