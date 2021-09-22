@@ -193,6 +193,7 @@ export default {
               c: {
                 height: 25,
                 fontSize: 20,
+                fontFamily: 'pingfang',
                 width: 50,
                 borderRadius: 4,
                 color: '#fff',
@@ -222,6 +223,7 @@ export default {
               b: {
                 lineHeight: 30,
                 fontSize: 20,
+                fontFamily: 'pingfang',
                 color: '#fff',
                 align: 'left'
               }
@@ -297,6 +299,7 @@ export default {
                 height: 20,
                 fontSize: 15,
                 width: 40,
+                fontFamily: 'pingfang',
                 borderRadius: 4,
                 color: '#fff',
                 backgroundColor: this.CO2.color,
@@ -324,6 +327,7 @@ export default {
               },
               b: {
                 lineHeight: 24,
+                fontFamily: 'pingfang',
                 color: '#fff',
                 align: 'left'
               }
@@ -401,6 +405,7 @@ export default {
                 height: 20,
                 fontSize: 15,
                 width: 40,
+                fontFamily: 'pingfang',
                 borderRadius: 4,
                 color: '#fff',
                 backgroundColor: this.TVOC.color,
@@ -431,6 +436,7 @@ export default {
               b: {
                 lineHeight: 24,
                 color: '#fff',
+                fontFamily: 'pingfang',
                 align: 'left'
               }
             }
