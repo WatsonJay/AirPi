@@ -53,7 +53,7 @@ export default {
   text-align: center;
   height: 100%;
   color: #2c3e50;
-  background: radial-gradient(ellipse at center, #969696 0%, #595959 100%);
+  background: radial-gradient(ellipse at center, #2980b9 0%, #2c3e50 100%);
 }
 
 #nav a {
