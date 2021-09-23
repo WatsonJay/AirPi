@@ -2,7 +2,7 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
-import { Col, Row, message } from 'ant-design-vue';
+import { Col, Row, message, Radio } from 'ant-design-vue';
 import 'ant-design-vue/dist/antd.css';
 import ECharts from 'vue-echarts'
 import { use } from 'echarts/core'
@@ -15,23 +15,26 @@ var VueTouch = require('vue-touch')
 Vue.use(VueTouch, {name: 'v-touch'})
 Vue.use(Col)
 Vue.use(Row)
+Vue.use(Radio)
 
 // import ECharts modules manually to reduce bundle size
 import {
   CanvasRenderer
 } from 'echarts/renderers'
 import {
-  GaugeChart,BarChart
+  GaugeChart,LineChart
 } from 'echarts/charts'
 import {
   GridComponent,
+  LegendComponent,
   TooltipComponent
 } from 'echarts/components'
 
 use([
   CanvasRenderer,
-  GaugeChart,BarChart,
+  GaugeChart,LineChart,
   GridComponent,
+  LegendComponent,
   TooltipComponent
 ]);
 

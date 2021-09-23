@@ -46,9 +46,9 @@
         <v-chart autoresize :option="optionHCHO" :style="{height: allHeight * 0.82 + 'px'}"/>
         <a-row :gutter="20">
           <a-col :span="12" >
-            <div style="background: hsla(0,0%,100%,.2); border-radius: 6px">
+            <div style="background: hsla(0,0%,100%,.2); border-radius: 6px;box-shadow: 3px 2px 6px #343a40;">
               <!--              <span class="numberTitle" :style="{'font-size': allHeight * 0.035 + 'px'}">温度</span>-->
-              <div style="background: #868e96; border-radius: 5px 5px 0 0 ;color: white">
+              <div style="background: #868e96; border-radius: 5px 5px 0 0 ;color: white;">
                 <span>温度</span>
               </div>
               <div>
@@ -58,7 +58,7 @@
             </div>
           </a-col>
           <a-col :span="12">
-            <div style="background: hsla(0,0%,100%,.2); border-radius: 6px">
+            <div style="background: hsla(0,0%,100%,.2); border-radius: 6px;box-shadow: 3px 2px 6px #343a40;">
               <!--              <span class="numberTitle" :style="{'font-size': allHeight * 0.035 + 'px'}">湿度</span>-->
               <div style="background: #868e96; border-radius: 5px 5px 0 0 ;color: white">
                 <span>湿度</span>
@@ -435,7 +435,7 @@ export default {
               },
               b: {
                 lineHeight: 24,
-                color: '#fff',
+                color: '#e9ecef',
                 fontFamily: 'pingfang',
                 align: 'left'
               }
@@ -458,12 +458,6 @@ export default {
   font-weight: 800;
   text-shadow: 1px 1px 5px #3498db;
   font-family: "digital-7";
-}
-.numberTitle {
-  color: #e9ecef;
-}
-.AQItext {
-  display: block;
 }
 .ant-carousel >>> .slick-slide {
   text-align: center;
