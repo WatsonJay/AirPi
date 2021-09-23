@@ -27,15 +27,15 @@ export default {
       }
     },
     swiperleft: function () { //右滑切换到detail页
-      if (this.$route.path == '/clock') {
+      if (this.$route.path === '/clock') {
         this.$router.replace({'path': '/dashboard'});
         return
       }
-      if (this.$route.path == '/dashboard') {
+      if (this.$route.path === '/dashboard') {
         this.$router.replace({'path': '/historyChart'});
         return
       }
-      if (this.$route.path == '/historyChart'){
+      if (this.$route.path === '/historyChart'){
         this.$router.replace({'path':'/clock'});
         return
       }
@@ -54,7 +54,7 @@ export default {
   height: 100%;
   color: #2c3e50;
   /*background: radial-gradient(ellipse at center, #2980b9 0%, #2c3e50 100%);*/
-  background: linear-gradient(to bottom, #005C97, #363795);
+  background: rgb(67,61,92);
 }
 
 #nav a {

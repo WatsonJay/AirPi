@@ -27,6 +27,7 @@ import {
 import {
   GridComponent,
   LegendComponent,
+  DataZoomComponent,
   TooltipComponent
 } from 'echarts/components'
 
@@ -35,6 +36,7 @@ use([
   GaugeChart,LineChart,
   GridComponent,
   LegendComponent,
+  DataZoomComponent,
   TooltipComponent
 ]);
 

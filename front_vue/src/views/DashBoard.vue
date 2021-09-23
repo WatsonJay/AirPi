@@ -209,13 +209,14 @@ export default {
             width: '60%',
             borderRadius: 8,
             formatter: function (value) {
-              return '{a|' + value.toFixed(3) + '}{b|mg/m³}'
+              return '{a|'+value.toFixed(3) +'}{b|mg/m³}'
             },
             rich: {
               a: {
                 fontSize: 50,
                 fontWeight: 800,
                 fontFamily: 'digital-7',
+                width: 110,
                 lineHeight: 50,
                 color: '#e9ecef',
                 align: 'left'
@@ -428,8 +429,8 @@ export default {
                 fontSize: 40,
                 fontWeight: 800,
                 fontFamily: 'digital-7',
-                shadowColor: '1px 1px 5px #3498db',
                 lineHeight: 40,
+                width: 75,
                 color: '#e9ecef',
                 align: 'left'
               },
