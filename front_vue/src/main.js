@@ -2,7 +2,7 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
-import { Col, Row, message, Radio } from 'ant-design-vue';
+import { Col, Row, Radio } from 'ant-design-vue';
 import 'ant-design-vue/dist/antd.css';
 import ECharts from 'vue-echarts'
 import { use } from 'echarts/core'
@@ -46,8 +46,6 @@ Vue.component('v-chart', ECharts)
 VueTouch.config.swipe = {
   threshold:50  //设置左右滑动的距离
 }
-
-Vue.prototype.$message = message;
 
 new Vue({
   router,
