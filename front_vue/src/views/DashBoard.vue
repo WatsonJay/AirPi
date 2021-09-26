@@ -12,16 +12,16 @@
           </div>
           <div style="width: 80%;margin: 0 auto;border-radius: 2px" :style="{'border-bottom': '4px solid '+ this.pmColor.pm2}" ></div>
         </div>
-        <div class="PmDiv" :style="{height: allHeight * 0.2 + 'px','margin-top': '20px'}">
-          <div style="background: #868e96; border-radius: 5px 5px 0 0 ;color: white">
-            <span>PM5</span>
-          </div>
-          <div style="color: #c5f6fa">
-            <span class="number" :style="{'font-size': allHeight * 0.11 + 'px', 'line-height': allHeight * 0.11 + 'px'}">{{pmValue.pm5}}</span>
-            <span> ㎍/㎥</span>
-          </div>
-          <div style="width: 80%;margin: 0 auto;border-radius: 2px" :style="{'border-bottom': '4px solid '+ this.pmColor.pm5}" ></div>
-        </div>
+<!--        <div class="PmDiv" :style="{height: allHeight * 0.2 + 'px','margin-top': '20px'}">-->
+<!--          <div style="background: #868e96; border-radius: 5px 5px 0 0 ;color: white">-->
+<!--            <span>PM5</span>-->
+<!--          </div>-->
+<!--          <div style="color: #c5f6fa">-->
+<!--            <span class="number" :style="{'font-size': allHeight * 0.11 + 'px', 'line-height': allHeight * 0.11 + 'px'}">{{pmValue.pm5}}</span>-->
+<!--            <span> ㎍/㎥</span>-->
+<!--          </div>-->
+<!--          <div style="width: 80%;margin: 0 auto;border-radius: 2px" :style="{'border-bottom': '4px solid '+ this.pmColor.pm5}" ></div>-->
+<!--        </div>-->
         <div class="PmDiv" :style="{height: allHeight * 0.2 + 'px','margin-top': '20px'}">
           <div style="background: #868e96; border-radius: 5px 5px 0 0 ;color: white">
             <span>PM10</span>
@@ -33,7 +33,7 @@
           <div style="width: 80%;margin: 0 auto;border-radius: 2px" :style="{'border-bottom': '4px solid '+ this.pmColor.pm10}" ></div>
         </div>
         <div style="border-radius: 6px; padding: 0 5px; box-shadow: 3px 2px 6px #343a40; margin-top: 20px"
-             :style="{color: AQI.color, background: AQI.background}">
+             :style="{color: AQI.color, background: AQI.background, 'margin-top': allHeight * 0.2 + 40 + 'px'}">
           <span style="text-align: left" :style="{'font-size': allHeight * 0.035 + 'px'}">空气质量指数</span>
           <span class="number" style="text-align: right;display: block" :style="{'font-size': allHeight * 0.11 + 'px', 'line-height': allHeight * 0.11 + 'px'}">{{AQI.value}}</span>
         </div>
