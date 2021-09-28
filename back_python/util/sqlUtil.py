@@ -15,4 +15,7 @@ class sqlUtil:
         path = str(Path(self.path + self.file))
         if not os.path.exists(path):
            conn = sqlite3.connect(path)
-           print(1)
+           self.__initSqlscript()
+
+    def __initSqlscript(self):
+        print(1)
