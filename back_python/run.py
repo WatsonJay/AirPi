@@ -3,7 +3,10 @@
 # @Author  : Jaywatson
 # @File    : run.py
 # @Soft    : back_python
-from  util.sqlUtil import sqlUtil
+import os
+from dotenv import load_dotenv
 
-if __name__ == '__main__':
-    sqlUtil = sqlUtil('/conf/air.db')
+env_path = os.path.join(os.path.dirname(__file__), '.env')
+if os.path.exists(env_path):
+    # print(f"load `{env_path}` environment file")
+    load_dotenv(env_path)
