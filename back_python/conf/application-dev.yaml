@@ -1,0 +1,10 @@
+DataSource:
+  NAME: air
+
+Redis:
+  HOST: 172.96.229.205 #redis地址
+  PORT: 16379 #端口
+  PASSWORD: 123456 #密码
+  DB: 8 #数据库
+  EXPIRE_TIME: 60 # 过期时间
+  TIMEOUT: 300 # 连接超时

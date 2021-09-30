@@ -1,0 +1,40 @@
+version: 1.0
+
+# 格式化
+formatters:
+  simple:
+    format: '[%(asctime)s] %(levelname)s %(process)d:[%(filename)s:%(lineno)d] - %(message)s'
+    datefmt: '%Y-%m-%d %H:%M:%S'
+
+#触发器
+handlers:
+  file:
+    class: logging.handlers.TimedRotatingFileHandler
+    level: WARNING
+    formatter: simple
+    filename: ./logs/message.log
+    #增量间隔
+    interval: 1
+    #增量频度，D为天，H为小时
+    when: D
+    #保留文件数
+    backupCount: 30
+    #编码
+    encoding: utf8
+  stream:
+    class: logging.StreamHandler
+    level: DEBUG
+    formatter: simple
+    stream: ext://sys.stdout
+
+#实体
+loggers:
+  libs:
+    level: DEBUG
+    handlers: [file,stream]
+    qualname: Libs
+    propagate: 0
+
+root:
+    level: INFO
+    handlers: [file,stream]

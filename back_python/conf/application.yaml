@@ -1,0 +1,13 @@
+LANG: zh_CN
+
+application:
+  active:
+    profile: dev #数据库配置文件
+
+Scheduler: #定时调度
+  ENABLE: True #是否启用
+  THREADPOOL: 20 #线程池
+  MAX_INSTANCES: 3 #
+
+JWT: #token认证
+  Authorization: Flase #是否开启授权

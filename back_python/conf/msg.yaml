@@ -1,0 +1,17 @@
+zh_CN:
+  200: "成功"
+  A0001: "受损认证"
+  A0002: "无效认证"
+  A0003: "授权存在异常"
+  U0001: "系统异常"
+
+  E9999: "未知异常，请查看日志"
+
+EN:
+  200: "SUCCESS"
+  A0001: “BROKEN TOKEN”
+  A0002: ”INVALID TOKEN"
+  A0003: "TOKEN IS WRONG"
+  U0001: "SYSTEM ERROR"
+
+  E9999: "UNKNOEN ERROR,SEE THE LOG"
