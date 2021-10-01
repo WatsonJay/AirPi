@@ -82,8 +82,8 @@ export default {
     return {
       allHeight: document.body.clientHeight - 20,
       allWidth: document.body.clientWidth - 20,
-      temp: 33,
-      hum: 99,
+      temp: 33.99,
+      hum: 99.99,
       pm2: 21,
       pm5: 100,
       pm10: 55,
