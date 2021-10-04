@@ -59,13 +59,14 @@ class BaseSql:
                 return False
 
     '''查询'''
-    def select(self,args):
-        datas = self.__model__.query.filter(*args).all()
-        return self.__parse_data(datas)
+    def select(self,*args):
+        datas = self.__model__.query.filter(args).all()
+        return self.parse_data(datas)
 
     '''分页查询'''
-    def select_by_page(self, args):
-        print(4)
+    def select_by_page(self, page, perPage, *args):
+        datas = self.__model__.query.filter(args).paginate(page=page, per_page=perPage)
+        return self.parse_data(datas)
 
     '''根据主键ID获取数据'''
     def get(self, key):
@@ -92,7 +93,7 @@ class BaseSql:
         return [dict(zip(result.keys(), result)) for result in results]
 
     '''结果格式化'''
-    def __parse_data(self,datas):
+    def parse_data(self,datas):
         if isinstance(datas, (list, tuple)):
             datas = list(map(lambda x: {prop.key: getattr(x, prop.key) for prop in self.__model__.__mapper__.iterate_properties},datas))
         else:

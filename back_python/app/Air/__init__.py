@@ -6,4 +6,6 @@
 
 from flask import Blueprint
 
-testBp = Blueprint("test", __name__, url_prefix="/v1/air/")
+airBp = Blueprint("test", __name__, url_prefix="/v1/air/")
+
+from  app.Air import Transport

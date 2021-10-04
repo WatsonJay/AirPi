@@ -61,8 +61,8 @@ def create_app(**kwargs):
             app.config['SCHEDULER_JOB_DEFAULTS'] = {'coalesce': False,
                                                     'max_instances': commonConfig['Scheduler']['MAX_INSTANCES']}
             app.config['JOBS'] = []
-            from app.Air.CollectData import collect
-            app.config['JOBS'].append({'id': 'collect', 'func': collect, 'args': None,'trigger': 'interval', 'seconds': 5})
+            # from app.Air.CollectData import collect
+            # app.config['JOBS'].append({'id': 'collect', 'func': collect, 'args': None,'trigger': 'interval', 'seconds': 60})
             scheduler_init(app)
 
         # 注册蓝图

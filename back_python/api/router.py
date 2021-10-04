@@ -3,6 +3,6 @@
 # @Author  : Jaywatson
 # @File    : router.py
 # @Soft    : backend_flask
-from app.Air import testBp
+from app.Air import airBp
 
-router = [testBp]
+router = [airBp]

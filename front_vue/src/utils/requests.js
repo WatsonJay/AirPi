@@ -35,3 +35,15 @@ service.interceptors.response.use( (response) => {
     message.error(response.data.message)
   }
 })
+
+const installer = {
+  vm: {},
+  install (Vue) {
+    Vue.use(VueAxios, service)
+  }
+}
+
+export {
+  installer as VueAxios,
+  service as axios
+}

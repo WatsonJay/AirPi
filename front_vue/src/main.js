@@ -8,6 +8,7 @@ import ECharts from 'vue-echarts'
 import { use } from 'echarts/core'
 //全局scss
 import "./styles/index.scss";
+import api from './api'
 
 Vue.config.productionTip = false
 
@@ -42,6 +43,7 @@ use([
 
 // register globally (or you can do it locally)
 Vue.component('v-chart', ECharts)
+Vue.prototype.$api = api;
 
 VueTouch.config.swipe = {
   threshold:50  //设置左右滑动的距离
