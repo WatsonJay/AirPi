@@ -29,6 +29,12 @@ export default {
       allHeight: document.body.clientHeight - 20,
       allWidth: document.body.clientWidth - 20,
       type: 'TVOC',
+      xAxis: [],
+      hcho: [],
+      tvoc: [],
+      co2: [],
+      pm10: [],
+      pm25: [],
       optionTVOC: {},
       optionCO2: {},
       optionPM: {}
@@ -36,9 +42,8 @@ export default {
   },
   mounted() {
     const that = this
-    this.reDrawTVOCChart()
-    this.reDrawCO2Chart()
-    this.reDrawPMChart()
+    this.refreshData()
+    this.timer = setInterval(this.refreshData, 120000);
     window.onresize = () => {
       that.allHeight = document.body.clientHeight - 20
       that.allWidth = document.body.clientWidth - 40
@@ -48,6 +53,23 @@ export default {
     }
   },
   methods: {
+    refreshData(){
+      this.$api.air.getHistoryData().then(res=> {
+        // 执行某些操作
+        debugger
+        if(res.success) {
+          this.xAxis = res.data.createtime
+          this.hcho = res.data.hcho
+          this.tvoc = res.data.tvoc
+          this.co2 = res.data.co2
+          this.pm25 = res.data.pm25
+          this.pm10 = res.data.pm10
+          this.reDrawTVOCChart()
+          this.reDrawCO2Chart()
+          this.reDrawPMChart()
+        }
+      })
+    },
     reDrawTVOCChart() {
       this.optionTVOC = {
         backgroundColor: 'rgba(206, 212, 218, 0.1)',
@@ -55,7 +77,7 @@ export default {
           {
             type: 'category',
             boundaryGap: false,
-            data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+            data: this.xAxis
           }
         ],
         legend: {
@@ -94,12 +116,12 @@ export default {
         dataZoom: [
           {
             type: 'inside',
-            start: 0,
-            end: 80
+            start: 20,
+            end: 100
           },
           {
-            start: 0,
-            end: 80
+            start: 20,
+            end: 100
           }
         ],
         series: [
@@ -129,7 +151,7 @@ export default {
             emphasis: {
               focus: 'series'
             },
-            data: [140, 232, 101, 264, 90, 340, 250]
+            data: this.hcho
           },
           {
             name: '挥发气体(TVOC)',
@@ -157,7 +179,7 @@ export default {
             emphasis: {
               focus: 'series'
             },
-            data: [220, 302, 181, 234, 210, 290, 150]
+            data: this.tvoc
           }
         ]
       }
@@ -169,7 +191,7 @@ export default {
           {
             type: 'category',
             boundaryGap: false,
-            data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+            data: this.xAxis
           }
         ],
         legend: {
@@ -208,12 +230,12 @@ export default {
         dataZoom: [
           {
             type: 'inside',
-            start: 0,
-            end: 80
+            start: 20,
+            end: 100
           },
           {
-            start: 0,
-            end: 80
+            start: 20,
+            end: 100
           }
         ],
         series: [
@@ -243,7 +265,7 @@ export default {
             emphasis: {
               focus: 'series'
             },
-            data: [140, 232, 101, 264, 90, 340, 250]
+            data: this.co2
           }
         ]
       }
@@ -255,7 +277,7 @@ export default {
           {
             type: 'category',
             boundaryGap: false,
-            data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+            data: this.xAxis
           }
         ],
         legend: {
@@ -294,12 +316,12 @@ export default {
         dataZoom: [
           {
             type: 'inside',
-            start: 0,
-            end: 80
+            start: 20,
+            end: 100
           },
           {
-            start: 0,
-            end: 80
+            start: 20,
+            end: 100
           }
         ],
         series: [
@@ -329,7 +351,7 @@ export default {
             emphasis: {
               focus: 'series'
             },
-            data: [140, 232, 101, 264, 90, 340, 250]
+            data: this.pm25
           },
           // {
           //   name: 'PM5',
@@ -392,7 +414,7 @@ export default {
             emphasis: {
               focus: 'series'
             },
-            data: [320, 132, 201, 334, 190, 130, 220]
+            data: this.pm10
           }
         ]
       }

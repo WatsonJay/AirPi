@@ -1,15 +1,14 @@
-import Vue from "vue";
 import axios from "axios";
-import {message, notification} from "ant-design-vue";
-import { VueAxios } from "axios";
+import {message} from "ant-design-vue";
+import { VueAxios } from "./axios";
 
 message.config({
   maxCount: 2,
 });
 
 //创建axios实例
-const service = axios.create({
-  timeout: 12000
+const axiosInstance = axios.create({
+  timeout: 6000
 })
 
 const error = (error) => {
@@ -20,7 +19,7 @@ const error = (error) => {
   return Promise.reject(error)
 }
 
-service.interceptors.request.use(config => {
+axiosInstance.interceptors.request.use(config => {
   config.method = config.method || 'get'
 
   if (config.method === 'get' && config.data) {
@@ -30,20 +29,24 @@ service.interceptors.request.use(config => {
   return config
 }, error)
 
-service.interceptors.response.use( (response) => {
+axiosInstance.interceptors.response.use( (response) => {
   if (response.data.success === false && response.data.message) {
     message.error(response.data.message)
+  }else{
+    return response.data
   }
 })
 
 const installer = {
   vm: {},
   install (Vue) {
-    Vue.use(VueAxios, service)
+    Vue.use(VueAxios, axiosInstance)
   }
 }
 
+export default axiosInstance;
+
 export {
   installer as VueAxios,
-  service as axios
+  axiosInstance as axios
 }

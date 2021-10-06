@@ -3,6 +3,7 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import { Col, Row, Radio } from 'ant-design-vue';
+import { VueAxios } from '@/utils/requests'
 import 'ant-design-vue/dist/antd.css';
 import ECharts from 'vue-echarts'
 import { use } from 'echarts/core'
@@ -11,6 +12,8 @@ import "./styles/index.scss";
 import api from './api'
 
 Vue.config.productionTip = false
+
+Vue.use(VueAxios)
 
 var VueTouch = require('vue-touch')
 Vue.use(VueTouch, {name: 'v-touch'})
