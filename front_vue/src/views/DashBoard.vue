@@ -90,8 +90,13 @@ export default {
   },
   mounted() {
     const that = this
-    this.refreshData()
-    this.timer = setInterval(this.refreshData, 62000);
+    // this.refreshData()
+    // this.timer = setInterval(this.refreshData, 62000);
+    this.$socket.open()
+    this.sockets.subscribe('test', data => {
+      debugger
+      console.log('test', data)
+    })
     window.onresize = () => {
       that.allHeight = document.body.clientHeight - 20
       that.allWidth = document.body.clientWidth - 40
@@ -107,7 +112,6 @@ export default {
     refreshData(){
       this.$api.air.getDashData().then(res=> {
         // 执行某些操作
-        debugger
         if(res.success) {
           this.pm25.value = res.data['pm25']
           this.selectPM25Color(res.data['pm25'])
@@ -576,7 +580,7 @@ export default {
         }]
       }
     }
-  }
+  },
 }
 </script>
 
