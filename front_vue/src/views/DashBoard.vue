@@ -93,6 +93,7 @@ export default {
     // this.refreshData()
     // this.timer = setInterval(this.refreshData, 62000);
     this.$socket.open()
+    debugger
     this.sockets.subscribe('test', data => {
       debugger
       console.log('test', data)
@@ -106,7 +107,22 @@ export default {
     }
   },
   beforeDestroy() {
+    this.$socket.close()
     clearInterval(this.timer);
+  },
+  sockets: {
+    connecting() {
+      console.log('正在连接')
+    },
+    disconnect() {
+      console.log("Socket 断开");
+    },
+    connect_failed() {
+      console.log('连接失败')
+    },
+    connect() {
+      console.log('socket connected')
+    }
   },
   methods: {
     refreshData(){

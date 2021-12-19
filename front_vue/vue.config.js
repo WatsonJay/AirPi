@@ -13,7 +13,7 @@ module.exports = {
         },
         logLevel: 'debug'
       },
-      "/": {
+      "/testconn": {
         target: "http://127.0.0.1:13140", // 跨域目标主机，自行修改
         ws: true, // 代理 websockets
         changeOrigin: true,

@@ -55,14 +55,17 @@ VueTouch.config.swipe = {
 }
 
 const socketOptions = {
-  autoConnect: false,       // 自动连接     这里为我项目需求  需要在指定情况下才连接socket
+  autoConnect: false, // 自动连接     这里为我项目需求  需要在指定情况下才连接socket
+  transports: ['websocket'],
+  path: '/testconn/'
 }
 
 // 注册
 Vue.use(
   new VueSocketIO({
     debug: true ,   // debug调试，生产建议关闭
-    connection: SocketIO("127.0.0.1:13140/test_conn", socketOptions),
+    Access_Control_Allow_Origin: '*',
+    connection: SocketIO.connect("127.0.0.1:13140", socketOptions),
   })
 )
 
