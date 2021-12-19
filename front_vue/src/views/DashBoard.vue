@@ -94,6 +94,7 @@ export default {
     // this.timer = setInterval(this.refreshData, 62000);
     this.$socket.open()
     debugger
+    this.$socket.emit('test')
     this.sockets.subscribe('test', data => {
       debugger
       console.log('test', data)
