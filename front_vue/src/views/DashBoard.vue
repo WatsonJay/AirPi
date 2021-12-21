@@ -93,12 +93,6 @@ export default {
     // this.refreshData()
     // this.timer = setInterval(this.refreshData, 62000);
     this.$socket.open()
-    debugger
-    this.$socket.emit('test')
-    this.sockets.subscribe('test', data => {
-      debugger
-      console.log('test', data)
-    })
     window.onresize = () => {
       that.allHeight = document.body.clientHeight - 20
       that.allWidth = document.body.clientWidth - 40
@@ -121,8 +115,12 @@ export default {
     connect_failed() {
       console.log('连接失败')
     },
+    server_response(data) {
+      console.log(data)
+    },
     connect() {
       console.log('socket connected')
+      this.$socket.emit('test')
     }
   },
   methods: {

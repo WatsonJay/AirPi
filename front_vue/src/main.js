@@ -63,7 +63,7 @@ const socketOptions = {
 Vue.use(
   new VueSocketIO({
     debug: true ,   // debug调试，生产建议关闭
-    connection: SocketIO("127.0.0.1:13140/testconn/", socketOptions),
+    connection: SocketIO("127.0.0.1:13140/testconn", socketOptions),
   })
 )
 
