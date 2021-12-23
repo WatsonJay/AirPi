@@ -5,12 +5,44 @@
         <a-col :span="12">
           <v-chart autoresize :option="optionHCHO" :style="{width: allHeight * 0.82 + 'px',height: allHeight * 0.60 + 'px'}"/>
           <a-row style="padding:0 5px">
-            <a-col :span="1">
+            <a-col :span="3">
               <div style="width: 100%;margin: 0 auto;" :style="{'border-bottom': '6px solid '+ this.AQILevel[0]}" ></div>
             </a-col>
+            <a-col :span="3">
+              <div style="width: 100%;margin: 0 auto;" :style="{'border-bottom': '6px solid '+ this.AQILevel[1]}" ></div>
+            </a-col>
+            <a-col :span="3">
+              <div style="width: 100%;margin: 0 auto;" :style="{'border-bottom': '6px solid '+ this.AQILevel[2]}" ></div>
+            </a-col>
+            <a-col :span="3">
+              <div style="width: 100%;margin: 0 auto;" :style="{'border-bottom': '6px solid '+ this.AQILevel[3]}" ></div>
+            </a-col>
+            <a-col :span="3">
+              <div style="width: 100%;margin: 0 auto;" :style="{'border-bottom': '6px solid '+ this.AQILevel[4]}" ></div>
+            </a-col>
+            <a-col :span="3">
+              <div style="width: 100%;margin: 0 auto;" :style="{'border-bottom': '6px solid '+ this.AQILevel[5]}" ></div>
+            </a-col>
           </a-row>
-          <a-row>
-
+          <a-row style="margin-left: -18px">
+            <a-col :span="3">
+              <span>0</span>
+            </a-col>
+            <a-col :span="3">
+              <span>50</span>
+            </a-col>
+            <a-col :span="3">
+              <span>100</span>
+            </a-col>
+            <a-col :span="3">
+              <span>150</span>
+            </a-col>
+            <a-col :span="3">
+              <span>200</span>
+            </a-col>
+            <a-col :span="3">
+              <span>300</span>
+            </a-col>
           </a-row>
         </a-col>
         <a-col :span="12">
