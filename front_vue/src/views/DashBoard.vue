@@ -12,56 +12,46 @@
             <span class="number" style="text-align: right;display: block" :style="{'font-size': allHeight * 0.11 + 'px', 'line-height': allHeight * 0.11 + 'px'}">{{AQI.value}}</span>
           </div>
         </a-col>
-        <a-col :span="4"></a-col>
+        <a-col :span="3"></a-col>
         <a-col :span="3">
           <div>
-            <span>PM2.5</span>
-            <div style="width: 80%;margin: 0 auto;border-radius: 2px" :style="{'border-bottom': '4px solid '+ this.pm25.color}" ></div>
+            <div style="width: 80%;border-radius: 2px;margin-top: 4px"></div>
+            <span>温度</span>
             <div style="color: #dee2e6">
-              <span class="number" :style="{'font-size': allHeight * 0.14 + 'px', 'line-height': allHeight * 0.14 + 'px'}">{{pm25.value}}</span>
+              <span class="number" :style="{'font-size': allHeight * 0.14 + 'px', 'line-height': allHeight * 0.14 + 'px'}">{{temp}}</span>
               <span> ㎍/㎥</span>
             </div>
           </div>
         </a-col>
         <a-col :span="3">
           <div>
-            <span>PM2.5</span>
+            <div style="width: 80%;border-radius: 2px;margin-top: 4px"></div>
+            <span>湿度</span>
+            <div style="color: #dee2e6">
+              <span class="number" :style="{'font-size': allHeight * 0.14 + 'px', 'line-height': allHeight * 0.14 + 'px'}">{{hum}}</span>
+              <span> ㎍/㎥</span>
+            </div>
+          </div>
+        </a-col>
+        <a-col :span="5">
+          <div>
             <div style="width: 80%;margin: 0 auto;border-radius: 2px" :style="{'border-bottom': '4px solid '+ this.pm25.color}" ></div>
+            <span>PM2.5</span>
             <div style="color: #dee2e6">
               <span class="number" :style="{'font-size': allHeight * 0.14 + 'px', 'line-height': allHeight * 0.14 + 'px'}">{{pm25.value}}</span>
               <span> ㎍/㎥</span>
             </div>
           </div>
         </a-col>
-        <a-col :span="4">
+        <a-col :span="5">
           <div>
-            <span>PM2.5</span>
             <div style="width: 80%;margin: 0 auto;border-radius: 2px" :style="{'border-bottom': '4px solid '+ this.pm25.color}" ></div>
-            <div style="color: #dee2e6">
-              <span class="number" :style="{'font-size': allHeight * 0.14 + 'px', 'line-height': allHeight * 0.14 + 'px'}">{{pm25.value}}</span>
-              <span> ㎍/㎥</span>
-            </div>
-          </div>
-        </a-col>
-        <a-col :span="4">
-          <div>
             <span>PM2.5</span>
-            <div style="width: 80%;margin: 0 auto;border-radius: 2px" :style="{'border-bottom': '4px solid '+ this.pm25.color}" ></div>
             <div style="color: #dee2e6">
               <span class="number" :style="{'font-size': allHeight * 0.14 + 'px', 'line-height': allHeight * 0.14 + 'px'}">{{pm25.value}}</span>
               <span> ㎍/㎥</span>
             </div>
 
-          </div>
-        </a-col>
-        <a-col :span="4">
-          <div>
-            <span>PM2.5</span>
-            <div style="width: 80%;margin: 0 auto;border-radius: 2px" :style="{'border-bottom': '4px solid '+ this.pm25.color}" ></div>
-            <div style="color: #dee2e6">
-              <span class="number" :style="{'font-size': allHeight * 0.14 + 'px', 'line-height': allHeight * 0.14 + 'px'}">{{pm25.value}}</span>
-              <span> ㎍/㎥</span>
-            </div>
           </div>
         </a-col>
       </a-row>
@@ -76,8 +66,14 @@ export default {
     return {
       allHeight: document.body.clientHeight,
       allWidth: document.body.clientWidth,
+      temp: 33,
+      hum: 99,
       AQI: {value: 0, background: '#FF0000'},
-      pm25: {value: 9.99, color: '#7E0023'},
+      pm25: {value: 99.99, color: '#7E0023'},
+      pm10: {value: 21, color: '#7E0023'},
+      HCHO: {color: '#FF7E00',value: 0.3, status: '中度'},
+      CO2: {color: '#FF7E00',value: 9999, status: '立刻通风'},
+      TVOC: {color: '#FF7E00',value: 0.3, status: '优'},
     }
   }
 }
