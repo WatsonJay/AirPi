@@ -85,7 +85,7 @@ export default {
       hum: 99,
       AQI: {value: 500, background: '#95F084', status: '优'},
       pm25: {value: 99.9, color: '#FF5758'},
-      pm10: {value: 21, color: '#FF5758'},
+      pm10: {value: 21, color: '#AD1775'},
       HCHO: {color: '#FFAF6B',value: 0.3  , status: '中度'},
       CO2: {color: '#FFAF6B',value: 9999, status: '立刻通风'},
       TVOC: {color: '#FFAF6B',value: 0.3},
@@ -145,7 +145,7 @@ export default {
               width: 3
             }
           },
-          zlevel: 1
+          Z: 1
         }, {
           type: 'gauge',
           radius: '130%',
@@ -168,7 +168,7 @@ export default {
               color: '#fff'
             }
           },
-          zlevel: 2,
+          Z: 4,
         }, {
           type: 'gauge',
           radius: '90%',
