@@ -9,7 +9,7 @@ import os
 from flask import Flask
 
 from libs.exception.exception_handler import exception
-from libs.core import scheduler_init, register_api, db
+from libs.core import scheduler_init, register_api, db, socketio
 from util import get_yaml
 
 def create_app(**kwargs):
@@ -52,6 +52,8 @@ def create_app(**kwargs):
         db.init_app(app)
         from models.EnvData import EnvData
         db.create_all()
+
+        socketio.init_app(app=app, cors_allowed_origins='*')
 
         # 注册定时任务
         if commonConfig['Scheduler']['ENABLE']:

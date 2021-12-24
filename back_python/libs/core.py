@@ -9,9 +9,11 @@ from flask_apscheduler import APScheduler
 from flask_sqlalchemy import SQLAlchemy
 from flask import current_app, Blueprint
 import redis
+from flask_socketio import SocketIO
 
 db = SQLAlchemy()
 scheduler = APScheduler()
+socketio = SocketIO(logger=True, engineio_logger=True)
 
 '''redis数据库操作'''
 class RedisMethod(object):

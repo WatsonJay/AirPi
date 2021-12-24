@@ -2,50 +2,11 @@
   <div :style="{height:allHeight+ 'px', width: allWidth + 'px', position: 'absolute'}">
     <div class="main" style="height: 70%">
       <a-row>
-        <a-col :span="12">
-          <v-chart autoresize :option="optionHCHO" :style="{width: allHeight * 0.82 + 'px',height: allHeight * 0.60 + 'px'}"/>
-          <a-row style="padding:0 5px">
-            <a-col :span="3">
-              <div style="width: 100%;margin: 0 auto;" :style="{'border-bottom': '6px solid '+ this.AQILevel[0]}" ></div>
-            </a-col>
-            <a-col :span="3">
-              <div style="width: 100%;margin: 0 auto;" :style="{'border-bottom': '6px solid '+ this.AQILevel[1]}" ></div>
-            </a-col>
-            <a-col :span="3">
-              <div style="width: 100%;margin: 0 auto;" :style="{'border-bottom': '6px solid '+ this.AQILevel[2]}" ></div>
-            </a-col>
-            <a-col :span="3">
-              <div style="width: 100%;margin: 0 auto;" :style="{'border-bottom': '6px solid '+ this.AQILevel[3]}" ></div>
-            </a-col>
-            <a-col :span="3">
-              <div style="width: 100%;margin: 0 auto;" :style="{'border-bottom': '6px solid '+ this.AQILevel[4]}" ></div>
-            </a-col>
-            <a-col :span="3">
-              <div style="width: 100%;margin: 0 auto;" :style="{'border-bottom': '6px solid '+ this.AQILevel[5]}" ></div>
-            </a-col>
-          </a-row>
-          <a-row style="margin-left: -18px">
-            <a-col :span="3">
-              <span>0</span>
-            </a-col>
-            <a-col :span="3">
-              <span>50</span>
-            </a-col>
-            <a-col :span="3">
-              <span>100</span>
-            </a-col>
-            <a-col :span="3">
-              <span>150</span>
-            </a-col>
-            <a-col :span="3">
-              <span>200</span>
-            </a-col>
-            <a-col :span="3">
-              <span>300</span>
-            </a-col>
-          </a-row>
+        <a-col :span="13">
+          <v-chart autoresize :option="optionHCHO" :style="{width: allWidth * 0.55 + 'px',height: allHeight * 0.65 + 'px'}"/>
+          <img :src="require('/src/assets/02.png')" width="400">
         </a-col>
-        <a-col :span="12">
+        <a-col :span="11">
 
         </a-col>
       </a-row>
@@ -118,29 +79,169 @@ export default {
     return {
       allHeight: document.body.clientHeight,
       allWidth: document.body.clientWidth,
-      AQILevel: ['#2ED386', '#FFDB03', '#FA9C00', '#FF0101', '#920298', '#9A0000'],
+      AQILevel: ['#95F084', '#FFE696', '#FFAF6B', '#FF5758', '#9778FF', '#AD1775'],
       AQIStatus: ['优', '良', '轻度', '中度', '重度', '严重'],
       temp: 33,
       hum: 99,
-      AQI: {value: 500, background: '#2ED386', status: '优'},
-      pm25: {value: 99.9, color: '#7E0023'},
-      pm10: {value: 21, color: '#7E0023'},
-      HCHO: {color: '#FF7E00',value: 0.3  , status: '中度'},
-      CO2: {color: '#FF7E00',value: 9999, status: '立刻通风'},
-      TVOC: {color: '#FF7E00',value: 0.3},
+      AQI: {value: 500, background: '#95F084', status: '优'},
+      pm25: {value: 99.9, color: '#FF5758'},
+      pm10: {value: 21, color: '#FF5758'},
+      HCHO: {color: '#FFAF6B',value: 0.3  , status: '中度'},
+      CO2: {color: '#FFAF6B',value: 9999, status: '立刻通风'},
+      TVOC: {color: '#FFAF6B',value: 0.3},
+      HCHO_chart: [200, -20],
       optionHCHO: {},
     }
   },
   mounted() {
     const that = this
     that.reDrawHCHOChart()
+    // that.$socket.open()
+  },
+  beforeDestroy() {
+    this.$socket.close()
+  },
+  sockets: {
+    connecting() {
+      console.log('正在连接')
+    },
+    disconnect() {
+      console.log("Socket 断开");
+    },
+    connect_failed() {
+      console.log('连接失败')
+    },
+    server_response(data) {
+      console.log(data)
+    },
+    connect() {
+      console.log('socket connected')
+      //this.$socket.emit('test')
+    }
   },
   methods: {
     reDrawHCHOChart() {
+       var  splitCount = 60, // 刻度数量
+          pointerAngle = (this.HCHO_chart[0] - this.HCHO_chart[1]) * (0.5 - this.HCHO.value) / 0.5 + this.HCHO_chart[1]; // 当前指针（值）角度
       this.optionHCHO = {
         series: [{
-
-        }]
+          type: 'gauge',
+          radius: '130%',
+          startAngle: pointerAngle,
+          endAngle: this.HCHO_chart[1],
+          center: ["45%", "65%"],
+          min: 0,
+          max: 0.5,
+          axisLine: {
+            show: false
+          },
+          axisLabel:{
+            show: false
+          },
+          axisTick:{
+            length: 16,
+            splitNumber: Math.ceil((0.5 - this.HCHO.value) / 0.5 * 7),
+            lineStyle: {
+              width: 3
+            }
+          },
+          zlevel: 1
+        }, {
+          type: 'gauge',
+          radius: '130%',
+          startAngle: this.HCHO_chart[0],
+          endAngle: pointerAngle,
+          center: ["45%", "65%"],
+          min: 0,
+          max: 0.5,
+          axisLine: {
+            show: false
+          },
+          axisLabel:{
+            show: false
+          },
+          axisTick:{
+            length: 16,
+            splitNumber: Math.ceil(this.HCHO.value / 0.5 * 7),
+            lineStyle: {
+              width: 3,
+              color: '#fff'
+            }
+          },
+          zlevel: 2,
+        }, {
+          type: 'gauge',
+          radius: '90%',
+          startAngle: this.HCHO_chart[0],
+          endAngle: this.HCHO_chart[1],
+          center: ["45%", "65%"],
+          axisLine: {
+            lineStyle: {
+              width: 2,
+              color: [[1, '#7f7f86']]
+            }
+          },
+          axisLabel:{
+            show: false
+          },
+          axisTick:{
+            show: false
+          },
+          splitLine:{
+            show: false
+          },
+          pointer: {
+            show: false
+          },
+          title: {
+            offsetCenter: ['-5%', '-10%'],
+            color: '#e9ecef',
+            rich: {
+              c: {
+                height: 25,
+                fontSize: 20,
+                fontFamily: 'pingfang',
+                width: 50,
+                borderRadius: 4,
+                color: '#fff',
+                backgroundColor: this.HCHO.color,
+                align: 'center'
+              }
+            },
+            fontSize: document.body.clientHeight * 0.08,
+          },
+          detail: {
+            offsetCenter: ['-55%', '60%'],
+            valueAnimation: true,
+            width: '60%',
+            borderRadius: 8,
+            formatter: function (value) {
+              return '{a|'+value.toFixed(3) +'}{b|mg/m³}'
+            },
+            rich: {
+              a: {
+                fontSize: 50,
+                fontWeight: 500,
+                fontFamily: 'digital-7',
+                width: 110,
+                lineHeight: 50,
+                color: '#e9ecef',
+                align: 'left'
+              },
+              b: {
+                lineHeight: 30,
+                fontSize: 20,
+                fontFamily: 'pingfang',
+                color: '#fff',
+                align: 'left'
+              }
+            }
+          },
+          data: [{
+            value: this.HCHO.value,
+            name: '甲醛\n{c|' + this.HCHO.status+ '}'
+          }]
+        },]
       }
     },
   }
@@ -186,7 +287,7 @@ export default {
 }
 .number {
   color: #e9ecef;
-  font-weight: 6502;
+  font-weight: 500;
   font-family: "digital-7";
 }
 </style>

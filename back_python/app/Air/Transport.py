@@ -3,18 +3,21 @@
 # @Author  : Jaywatson
 # @File    : Transport.py
 # @Soft    : back_python
+import random
+
 from libs.Response.body import ResMsg
 from util.sql_factory import BaseSql
 from app.Air import airBp
+from libs import socketio
 from models.EnvData import EnvData
 
-@airBp.route("/getDashData", methods=["GET"])
-def getDashData():
-    sql = BaseSql(EnvData)
-    data = EnvData.query.order_by(EnvData.creatTime.desc()).first()
-    datas = sql.parse_data(data)
-    res = ResMsg(200, datas)
-    return res.data()
+# @airBp.route("/getDashData", methods=["GET"])
+# def getDashData():
+#     sql = BaseSql(EnvData)
+#     data = EnvData.query.order_by(EnvData.creatTime.desc()).first()
+#     datas = sql.parse_data(data)
+#     res = ResMsg(200, datas)
+#     return res.data()
 
 @airBp.route("/getHistoryData", methods=["GET"])
 def getHistoryData():
@@ -39,3 +42,12 @@ def getHistoryData():
         'tvoc': tvoc, 'co2': co2,
         'pm25': pm25, 'pm10': pm10})
     return res.data()
+
+@socketio.on('test', namespace='/testconn')
+def handle_message():
+    socketio.emit('my response', {'data': 'Connected'}, namespace='/testconn')
+    while True:
+        socketio.sleep(5)
+        t = random.randint(1, 100)
+        socketio.emit('server_response',
+                      {'data': t}, namespace='/testconn')
