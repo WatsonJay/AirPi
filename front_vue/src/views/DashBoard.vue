@@ -2,12 +2,13 @@
   <div :style="{height:allHeight+ 'px', width: allWidth + 'px', position: 'absolute'}">
     <div class="main" style="height: 70%">
       <a-row>
-        <a-col :span="13">
-          <v-chart autoresize :option="optionHCHO" :style="{width: allWidth * 0.55 + 'px',height: allHeight * 0.65 + 'px'}"/>
+        <a-col :span="11">
+          <v-chart autoresize :option="optionHCHO" :style="{width: allWidth * 0.45 + 'px',height: allHeight * 0.65 + 'px'}"/>
           <img :src="require('/src/assets/02.png')" width="400">
         </a-col>
-        <a-col :span="11">
-
+        <a-col :span="13">
+          <v-chart autoresize :option="optionHCHO" :style="{width: allWidth * 0.5 + 'px',height: allHeight * 0.325 + 'px'}"/>
+          <v-chart autoresize :option="optionHCHO" :style="{width: allWidth * 0.5 + 'px',height: allHeight * 0.325 + 'px'}"/>
         </a-col>
       </a-row>
     </div>
@@ -20,7 +21,7 @@
             </a-col >
             <a-col :span="4">
               <span style="font-size: 18px">AQI</span><br/>
-              <div style="width: 50px;height: 26px;margin: 5px auto;border-radius: 2px" :style="{'background': this.AQI.background}" >
+              <div style="width: 50px;height: 26px;margin: 5px auto;border-radius: 2px" :style="{'background': this.AQI.color}" >
                   <span style="line-height: 26px">{{ this.AQI.status }}</span>
               </div>
             </a-col>
@@ -83,23 +84,29 @@ export default {
       AQIStatus: ['优', '良', '轻度', '中度', '重度', '严重'],
       temp: 33,
       hum: 99,
-      AQI: {value: 500, background: '#95F084', status: '优'},
-      pm25: {value: 99.9, color: '#FF5758'},
+      AQI: {value: 500, color: '#95F084', status: '优'},
+      pm25: {value: 99.9, color: '#FF5758', status: '中度'},
       pm10: {value: 21, color: '#AD1775'},
-      HCHO: {color: '#FFAF6B',value: 0.3  , status: '中度'},
+      HCHO: {color: '#FFAF6B',value: 0.3, status: '中度'},
       CO2: {color: '#FFAF6B',value: 9999, status: '立刻通风'},
       TVOC: {color: '#FFAF6B',value: 0.3},
       HCHO_chart: [200, -20],
+      small_chart: [200, -20],
       optionHCHO: {},
+      optionCO2: {},
+      optionPM25: {},
     }
   },
   mounted() {
     const that = this
-    that.reDrawHCHOChart()
+    that.drawHCHOChart()
     // that.$socket.open()
   },
   beforeDestroy() {
     this.$socket.close()
+    this.optionHCHO = {}
+    this.optionCO2 = {}
+    this.optionPM25 = {}
   },
   sockets: {
     connecting() {
@@ -113,6 +120,7 @@ export default {
     },
     server_response(data) {
       console.log(data)
+      //数据初始化
     },
     connect() {
       console.log('socket connected')
@@ -120,27 +128,43 @@ export default {
     }
   },
   methods: {
-    reDrawHCHOChart() {
-       var  splitCount = 60, // 刻度数量
-          pointerAngle = (this.HCHO_chart[0] - this.HCHO_chart[1]) * (0.5 - this.HCHO.value) / 0.5 + this.HCHO_chart[1]; // 当前指针（值）角度
+    //HCHO图表处理
+    drawHCHOChart() {
+       var  splitCount = 7, // 刻度数量
+           max = 0.5, //比例最大值
+           pointerAngle = (this.HCHO_chart[0] - this.HCHO_chart[1]) * (0.5 - this.HCHO.value) / 0.5 + this.HCHO_chart[1], // 当前指针（值）角度
+           tickColor = { //图形渐变颜色方法，四个数字分别代表，右，下，左，上，offset表示0%到100%
+             type: 'linear',
+             x: 1,
+             y: 1,
+             x2: 0, //从左到右 0-1
+             y2: 0,
+             colorStops: [{
+               offset: 0,
+               color: '#CD48AE' // 0% 处的颜色
+             }, {
+               offset: 1,
+               color: '#2CABFC' // 100% 处的颜色
+             }],
+             globalCoord: false // 缺省为 false
+           };
       this.optionHCHO = {
         series: [{
           type: 'gauge',
           radius: '130%',
           startAngle: pointerAngle,
           endAngle: this.HCHO_chart[1],
-          center: ["45%", "65%"],
-          min: 0,
-          max: 0.5,
+          center: ["50%", "65%"],
           axisLine: {
             show: false
           },
           axisLabel:{
             show: false
           },
+          splitNumber: 9,
           axisTick:{
             length: 16,
-            splitNumber: Math.ceil((0.5 - this.HCHO.value) / 0.5 * 7),
+            splitNumber: Math.ceil((max - this.HCHO.value) / max * splitCount),
             lineStyle: {
               width: 3
             }
@@ -151,30 +175,45 @@ export default {
           radius: '130%',
           startAngle: this.HCHO_chart[0],
           endAngle: pointerAngle,
-          center: ["45%", "65%"],
-          min: 0,
-          max: 0.5,
+          center: ["50%", "65%"],
+          max: 1,
           axisLine: {
             show: false
           },
           axisLabel:{
             show: false
           },
-          axisTick:{
-            length: 16,
-            splitNumber: Math.ceil(this.HCHO.value / 0.5 * 7),
-            lineStyle: {
-              width: 3,
-              color: '#fff'
+          splitNumber: 9,
+          splitLine:{
+            show: false,
+          },
+          pointer: {
+            icon: 'rect',
+            offsetCenter: [0, '-77%'],
+            width: 3,
+            length: 22,
+            itemStyle: {
+              color: tickColor
             }
           },
+          axisTick:{
+            length: 16,
+            splitNumber: Math.ceil(this.HCHO.value / max * splitCount),
+            lineStyle: {
+              width: 3,
+              color: tickColor
+            }
+          },
+          data: [{
+            value: 1
+          }],
           Z: 4,
         }, {
           type: 'gauge',
           radius: '90%',
           startAngle: this.HCHO_chart[0],
           endAngle: this.HCHO_chart[1],
-          center: ["45%", "65%"],
+          center: ["50%", "65%"],
           axisLine: {
             lineStyle: {
               width: 2,
@@ -194,7 +233,7 @@ export default {
             show: false
           },
           title: {
-            offsetCenter: ['-5%', '-10%'],
+            offsetCenter: ['-5%', '-12%'],
             color: '#e9ecef',
             rich: {
               c: {
@@ -211,7 +250,7 @@ export default {
             fontSize: document.body.clientHeight * 0.08,
           },
           detail: {
-            offsetCenter: ['-55%', '60%'],
+            offsetCenter: ['-52.5%', '55%'],
             valueAnimation: true,
             width: '60%',
             borderRadius: 8,
@@ -242,6 +281,151 @@ export default {
             name: '甲醛\n{c|' + this.HCHO.status+ '}'
           }]
         },]
+      }
+    },
+    //小图表处理
+    drawSmallChart(chartOption, type, maxValue) {
+      var splitCount = 5, // 刻度数量
+          pointerAngle = (this.small_chart[0] - this.small_chart[1]) * (0.5 - type.value) / 0.5 + this.small_chart[1], // 当前指针（值）角度
+          tickColor = { //图形渐变颜色方法，四个数字分别代表，右，下，左，上，offset表示0%到100%
+            type: 'linear',
+            x: 1,
+            y: 1,
+            x2: 0, //从左到右 0-1
+            y2: 0,
+            colorStops: [{
+              offset: 0,
+              color: '#CD48AE' // 0% 处的颜色
+            }, {
+              offset: 1,
+              color: '#2CABFC' // 100% 处的颜色
+            }],
+            globalCoord: false // 缺省为 false
+          };
+    },
+    //PM25/AQI颜色匹配
+    selectPM25Color(value){
+      switch (true){
+        case value <= 35:
+          this.pm25.color = this.AQI.color = this.AQILevel[0];
+          this.pm25.status = this.AQI.status = this.AQIStatus[0];
+          this.AQI.value = Math.round(50/35*value);
+          break;
+        case value <= 75:
+          this.pm25.color = this.AQI.color = this.AQILevel[1];
+          this.pm25.status = this.AQI.status = this.AQIStatus[1];
+          this.AQI.value = Math.round((100 - 51)/(75 - 35)*(value - 35) + 51);
+          break;
+        case value <= 115:
+          this.pm25.color = this.AQI.color = this.AQILevel[2];
+          this.pm25.status = this.AQI.status = this.AQIStatus[2];
+          this.AQI.value = Math.round((150 - 101)/(115 - 75)*(value - 75) + 101);
+          break;
+        case value <= 150:
+          this.pm25.color = this.AQI.color = this.AQILevel[3];
+          this.pm25.status = this.AQI.status = this.AQIStatus[3];
+          this.AQI.value = Math.round((200 - 151)/(150 - 115)*(value - 115) + 151);
+          break;
+        case value <= 250:
+          this.pm25.color = this.AQI.color = this.AQILevel[4];
+          this.pm25.status = this.AQI.status = this.AQIStatus[4];
+          this.AQI.value = Math.round((300 - 201)/(250 - 150)*(value - 150) + 201);
+          break;
+        default:
+          this.pm25.color = this.AQI.color = this.AQILevel[5];
+          this.pm25.status = this.AQI.status = this.AQIStatus[5];
+          this.AQI.value = Math.round((500 - 301)/(500 - 250)*(value - 250) + 301);
+          break;
+      }
+    },
+    //PM10颜色匹配
+    selectPM10Color(value){
+      switch (true){
+        case value < 35:
+          this.pm10.color = this.AQILevel[0];break;
+        case value < 75:
+          this.pm10.color = this.AQILevel[1];break;
+        case value < 115:
+          this.pm10.color = this.AQILevel[2];break;
+        case value < 150:
+          this.pm10.color = this.AQILevel[3];break;
+        case value < 250:
+          this.pm10.color = this.AQILevel[4];break;
+        default:
+          this.pm10.color = this.AQILevel[5];break;
+      }
+    },
+    //HCHO颜色匹配
+    selectHCHOColor(value){
+      switch (true) {
+        case value < 50:
+          this.HCHO.color = this.AQILevel[0];
+          this.HCHO.status = this.statusLevel[0];
+          break;
+        case value < 100:
+          this.HCHO.color = this.AQILevel[1];
+          this.HCHO.status = this.statusLevel[1];
+          break;
+        case value < 200:
+          this.HCHO.color = this.AQILevel[2];
+          this.HCHO.status = this.statusLevel[2];
+          break;
+        case value < 300:
+          this.HCHO.color = this.AQILevel[3];
+          this.HCHO.status = this.statusLevel[3];
+          break;
+        case value < 400:
+          this.HCHO.color = this.AQILevel[4];
+          this.HCHO.status = this.statusLevel[4];
+          break;
+        default:
+          this.HCHO.color = this.AQILevel[5];
+          this.HCHO.status = this.statusLevel[5];
+          break;
+      }
+    },
+    //TVOC颜色匹配
+    selectTVOCColor(value){
+      switch (true) {
+        case value < 300:
+          this.TVOC.color = this.AQILevel[0];
+          break;
+        case value < 600:
+          this.TVOC.color = this.AQILevel[1];
+          break;
+        case value < 1200:
+          this.TVOC.color = this.AQILevel[2];
+          break;
+        case value < 1800:
+          this.TVOC.color = this.AQILevel[3];
+          break;
+        case value < 2400:
+          this.TVOC.color = this.AQILevel[4];
+          break;
+        default:
+          this.TVOC.color = this.AQILevel[5];
+          break;
+      }
+    },
+    //CO2颜色匹配
+    selectCo2Color(value){
+      switch (true) {
+        case value < 400:
+          this.CO2.color = this.AQILevel[0];
+          this.CO2.status = '清新';
+          break;
+        case value < 800:
+          this.CO2.color = this.AQILevel[1];
+          this.CO2.status = '稍闷';
+          break;
+        case value < 1200:
+          this.CO2.color = this.AQILevel[2];
+          this.CO2.status = '需通风';
+          break;
+        default:
+          this.CO2.color = this.AQILevel[3];
+          this.CO2.status = '立刻通风';
+          break;
       }
     },
   }
