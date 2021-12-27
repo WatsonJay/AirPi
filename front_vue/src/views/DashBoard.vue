@@ -7,8 +7,8 @@
           <img :src="require('/src/assets/02.png')" width="400">
         </a-col>
         <a-col :span="13">
-          <v-chart autoresize :option="optionHCHO" :style="{width: allWidth * 0.5 + 'px',height: allHeight * 0.325 + 'px'}"/>
-          <v-chart autoresize :option="optionHCHO" :style="{width: allWidth * 0.5 + 'px',height: allHeight * 0.325 + 'px'}"/>
+          <v-chart autoresize :option="optionCO2" :style="{width: allWidth * 0.5 + 'px',height: allHeight * 0.325 + 'px'}"/>
+          <v-chart autoresize :option="optionPM25" :style="{width: allWidth * 0.5 + 'px',height: allHeight * 0.325 + 'px'}"/>
         </a-col>
       </a-row>
     </div>
@@ -85,13 +85,34 @@ export default {
       temp: 33,
       hum: 99,
       AQI: {value: 500, color: '#95F084', status: '优'},
-      pm25: {value: 99.9, color: '#FF5758', status: '中度'},
-      pm10: {value: 21, color: '#AD1775'},
+      pm25: {value: 0.25, color: '#FF5758', status: '中度'},
+      pm10: {value: 0.34, color: '#AD1775'},
       HCHO: {color: '#FFAF6B',value: 0.3, status: '中度'},
-      CO2: {color: '#FFAF6B',value: 9999, status: '立刻通风'},
+      CO2: {color: '#FFAF6B',value: 2200, status: '立刻通风'},
       TVOC: {color: '#FFAF6B',value: 0.3},
       HCHO_chart: [200, -20],
-      small_chart: [200, -20],
+      CO2_small_chart: {
+        range: [280, -10],
+        center: ["20%", "52%"],
+        maxValue: 3200,
+        unit: 'PPM',
+        tipWidth: 70,
+        title: '二氧化碳',
+        titleWidth: 100,
+        titleOffset:['350%','-15%'],
+        valueWidth: 90
+      },
+      PM25_small_chart: {
+        range: [280, -10],
+        center: ["35%", "52%"],
+        maxValue: 0.35,
+        unit: 'mg/m³',
+        tipWidth: 50,
+        title: 'PM2.5',
+        titleWidth: 70,
+        titleOffset:['300%','-15%'],
+        valueWidth: 70
+      },
       optionHCHO: {},
       optionCO2: {},
       optionPM25: {},
@@ -100,6 +121,8 @@ export default {
   mounted() {
     const that = this
     that.drawHCHOChart()
+    that.optionCO2 = that.drawSmallChart(this.CO2, this.CO2_small_chart)
+    that.optionPM25 = that.drawSmallChart(this.pm25, this.PM25_small_chart)
     // that.$socket.open()
   },
   beforeDestroy() {
@@ -284,9 +307,10 @@ export default {
       }
     },
     //小图表处理
-    drawSmallChart(chartOption, type, maxValue) {
+    drawSmallChart(type, setting) {
+      var chartOption = {};
       var splitCount = 5, // 刻度数量
-          pointerAngle = (this.small_chart[0] - this.small_chart[1]) * (0.5 - type.value) / 0.5 + this.small_chart[1], // 当前指针（值）角度
+          pointerAngle = (setting.range[0] - setting.range[1]) * (setting.maxValue - type.value) / setting.maxValue + setting.range[1], // 当前指针（值）角度
           tickColor = { //图形渐变颜色方法，四个数字分别代表，右，下，左，上，offset表示0%到100%
             type: 'linear',
             x: 1,
@@ -302,6 +326,141 @@ export default {
             }],
             globalCoord: false // 缺省为 false
           };
+      chartOption = {
+        series: [{
+          type: 'gauge',
+          radius: '130%',
+          startAngle: pointerAngle,
+          endAngle: setting.range[1],
+          center: setting.center,
+          axisLine: {
+            show: false
+          },
+          axisLabel:{
+            show: false
+          },
+          splitLine:{
+            show: false,
+          },
+          splitNumber: 9,
+          axisTick:{
+            length: 10,
+            splitNumber: Math.ceil((setting.maxValue - type.value) / setting.maxValue * splitCount),
+            lineStyle: {
+              width: 3
+            }
+          },
+          Z: 1
+        }, {
+          type: 'gauge',
+          radius: '130%',
+          startAngle: setting.range[0],
+          endAngle: pointerAngle,
+          center: setting.center,
+          axisLine: {
+            show: false
+          },
+          axisLabel:{
+            show: false
+          },
+          splitNumber: 9,
+          splitLine:{
+            show: false,
+          },
+          pointer: {
+            show: false
+          },
+          axisTick:{
+            length: 10,
+            splitNumber: Math.ceil(type.value / setting.maxValue * splitCount),
+            lineStyle: {
+              width: 3,
+              color: tickColor
+            }
+          },
+          Z: 4,
+        }, {
+          type: 'gauge',
+          radius: '70%',
+          startAngle: setting.range[0],
+          endAngle: setting.range[1],
+          center: setting.center,
+          axisLine: {
+            lineStyle: {
+              width: 2,
+              color: [[1, '#7f7f86']]
+            }
+          },
+          axisLabel:{
+            show: false
+          },
+          axisTick:{
+            show: false
+          },
+          splitLine:{
+            show: false
+          },
+          pointer: {
+            show: false
+          },
+          title: {
+            offsetCenter: setting.titleOffset,
+            color: '#e9ecef',
+            rich: {
+              c: {
+                height: 20,
+                fontSize: 16,
+                fontFamily: 'pingfang',
+                width: setting.tipWidth,
+                borderRadius: 4,
+                color: '#fff',
+                backgroundColor: type.color,
+                align: 'center'
+              },
+              t: {
+                fontSize: 23,
+                fontFamily: 'pingfang',
+                width: setting.titleWidth,
+                color: '#fff',
+                align: 'center'
+              }
+            },
+            fontSize: document.body.clientHeight * 0.08,
+          },
+          detail: {
+            offsetCenter: ['120%', '95%'],
+            valueAnimation: true,
+            width: '60%',
+            borderRadius: 8,
+            formatter: function (value) {
+              return '{a|'+ value +'}{b|' + setting.unit + '}'
+            },
+            rich: {
+              a: {
+                fontSize: 40,
+                fontWeight: 500,
+                fontFamily: 'digital-7',
+                width: setting.valueWidth,
+                lineHeight: 40,
+                color: '#e9ecef',
+                align: 'left'
+              },
+              b: {
+                lineHeight: 30,
+                fontSize: 15,
+                fontFamily: 'pingfang',
+                color: '#fff',
+                align: 'left'
+              }
+            }
+          },
+          data: [{
+            value: type.value,
+            name: '{t|' +setting.title + '}{c|' + type.status+ '}'
+          }]
+        },]
+      }
+      return chartOption;
     },
     //PM25/AQI颜色匹配
     selectPM25Color(value){
