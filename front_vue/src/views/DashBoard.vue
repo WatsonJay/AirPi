@@ -15,17 +15,25 @@
     <div class="panel" style="height: 30%">
       <a-row class="panel-context" :gutter="10">
         <a-col :span="5">
-          <a-row style="margin-top: 20px">
-            <a-col :span="20">
-              <span class="number" :style="{'font-size': allHeight * 0.18 + 'px', 'line-height': allHeight * 0.18 + 'px'}">{{AQI.value}}</span>
-            </a-col >
-            <a-col :span="4">
-              <span style="font-size: 18px">AQI</span><br/>
-              <div style="width: 50px;height: 26px;margin: 5px auto;border-radius: 2px" :style="{'background': this.AQI.color}" >
-                  <span style="line-height: 26px">{{ this.AQI.status }}</span>
-              </div>
-            </a-col>
-          </a-row>
+<!--          <a-row style="margin-top: 20px">-->
+<!--            <a-col :span="20">-->
+<!--              <span class="number" :style="{'font-size': allHeight * 0.18 + 'px', 'line-height': allHeight * 0.18 + 'px'}">{{AQI.value}}</span>-->
+<!--            </a-col >-->
+<!--            <a-col :span="4">-->
+<!--              <span style="font-size: 18px">AQI</span><br/>-->
+<!--              <div style="width: 50px;height: 26px;margin: 5px auto;border-radius: 2px" :style="{'background': this.AQI.color}" >-->
+<!--                  <span style="line-height: 26px">{{ this.AQI.status }}</span>-->
+<!--              </div>-->
+<!--            </a-col>-->
+<!--          </a-row>-->
+          <div style="width: 80%;border-radius: 2px;margin-top: 4px"></div>
+          <span>AQI</span><br/>
+          <div style="color: #dee2e6">
+            <span class="number" :style="{'font-size': allHeight * 0.14 + 'px', 'line-height': allHeight * 0.14 + 'px'}">{{AQI.value}}</span>
+          </div>
+          <div style="width: 40px;height: 20px;margin: 0px auto;border-radius: 2px" :style="{'background': AQI.color}" >
+            <span style="line-height: 20px">{{ AQI.status }}</span>
+          </div>
         </a-col>
         <a-col :span="5"></a-col>
         <a-col :span="3">
@@ -90,28 +98,26 @@ export default {
       HCHO: {color: '#FFAF6B',value: 0.3, status: '中度'},
       CO2: {color: '#FFAF6B',value: 2200, status: '立刻通风'},
       TVOC: {color: '#FFAF6B',value: 0.3},
-      HCHO_chart: [200, -20],
+      HCHO_chart: [270, -90],
       CO2_small_chart: {
-        range: [280, -10],
+        range: [300, 40],
         center: ["20%", "52%"],
         maxValue: 3200,
         unit: 'PPM',
-        tipWidth: 70,
+        tipWidth: 60,
         title: '二氧化碳',
-        titleWidth: 100,
-        titleOffset:['350%','-15%'],
-        valueWidth: 90
+        titleWidth: 80,
+        titleOffset:['230%','-20%']
       },
       PM25_small_chart: {
-        range: [280, -10],
-        center: ["35%", "52%"],
+        range: [300, 40],
+        center: ["45%", "52%"],
         maxValue: 0.35,
         unit: 'mg/m³',
-        tipWidth: 50,
+        tipWidth: 40,
         title: 'PM2.5',
-        titleWidth: 70,
-        titleOffset:['300%','-15%'],
-        valueWidth: 70
+        titleWidth: 60,
+        titleOffset:['190%','-20%']
       },
       optionHCHO: {},
       optionCO2: {},
@@ -153,7 +159,7 @@ export default {
   methods: {
     //HCHO图表处理
     drawHCHOChart() {
-       var  splitCount = 7, // 刻度数量
+       var  splitCount = 9, // 刻度数量
            max = 0.5, //比例最大值
            pointerAngle = (this.HCHO_chart[0] - this.HCHO_chart[1]) * (0.5 - this.HCHO.value) / 0.5 + this.HCHO_chart[1], // 当前指针（值）角度
            tickColor = { //图形渐变颜色方法，四个数字分别代表，右，下，左，上，offset表示0%到100%
@@ -174,17 +180,17 @@ export default {
       this.optionHCHO = {
         series: [{
           type: 'gauge',
-          radius: '130%',
+          radius: '110%',
           startAngle: pointerAngle,
           endAngle: this.HCHO_chart[1],
-          center: ["50%", "65%"],
+          center: ["50%", "50%"],
           axisLine: {
             show: false
           },
           axisLabel:{
             show: false
           },
-          splitNumber: 9,
+          splitNumber: splitCount,
           axisTick:{
             length: 16,
             splitNumber: Math.ceil((max - this.HCHO.value) / max * splitCount),
@@ -195,10 +201,10 @@ export default {
           Z: 1
         }, {
           type: 'gauge',
-          radius: '130%',
+          radius: '110%',
           startAngle: this.HCHO_chart[0],
           endAngle: pointerAngle,
-          center: ["50%", "65%"],
+          center: ["50%", "50%"],
           max: 1,
           axisLine: {
             show: false
@@ -206,13 +212,13 @@ export default {
           axisLabel:{
             show: false
           },
-          splitNumber: 9,
+          splitNumber: splitCount,
           splitLine:{
             show: false,
           },
           pointer: {
             icon: 'rect',
-            offsetCenter: [0, '-77%'],
+            offsetCenter: [0, '-72%'],
             width: 3,
             length: 22,
             itemStyle: {
@@ -227,16 +233,19 @@ export default {
               color: tickColor
             }
           },
+          detail: {
+            show: false
+          },
           data: [{
             value: 1
           }],
           Z: 4,
         }, {
           type: 'gauge',
-          radius: '90%',
+          radius: '72%',
           startAngle: this.HCHO_chart[0],
           endAngle: this.HCHO_chart[1],
-          center: ["50%", "65%"],
+          center: ["50%", "50%"],
           axisLine: {
             lineStyle: {
               width: 2,
@@ -256,24 +265,31 @@ export default {
             show: false
           },
           title: {
-            offsetCenter: ['-5%', '-12%'],
+            offsetCenter: ['0%', '-30%'],
             color: '#e9ecef',
             rich: {
               c: {
-                height: 25,
-                fontSize: 20,
+                height: 20,
+                fontSize: 16,
                 fontFamily: 'pingfang',
-                width: 50,
+                width: 45,
                 borderRadius: 4,
                 color: '#fff',
                 backgroundColor: this.HCHO.color,
+                align: 'center'
+              },
+              t: {
+                fontSize: 23,
+                fontFamily: 'pingfang',
+                width: 45,
+                color: '#fff',
                 align: 'center'
               }
             },
             fontSize: document.body.clientHeight * 0.08,
           },
           detail: {
-            offsetCenter: ['-52.5%', '55%'],
+            offsetCenter: ['-50%', '12%'],
             valueAnimation: true,
             width: '60%',
             borderRadius: 8,
@@ -282,17 +298,16 @@ export default {
             },
             rich: {
               a: {
-                fontSize: 50,
+                fontSize: 45,
                 fontWeight: 500,
                 fontFamily: 'digital-7',
-                width: 110,
                 lineHeight: 50,
                 color: '#e9ecef',
                 align: 'left'
               },
               b: {
-                lineHeight: 30,
-                fontSize: 20,
+                lineHeight: 40,
+                fontSize: 15,
                 fontFamily: 'pingfang',
                 color: '#fff',
                 align: 'left'
@@ -301,7 +316,7 @@ export default {
           },
           data: [{
             value: this.HCHO.value,
-            name: '甲醛\n{c|' + this.HCHO.status+ '}'
+            name: '{t|甲醛} {c|' + this.HCHO.status+ '}'
           }]
         },]
       }
@@ -309,7 +324,7 @@ export default {
     //小图表处理
     drawSmallChart(type, setting) {
       var chartOption = {};
-      var splitCount = 5, // 刻度数量
+      var splitCount = 6, // 刻度数量
           pointerAngle = (setting.range[0] - setting.range[1]) * (setting.maxValue - type.value) / setting.maxValue + setting.range[1], // 当前指针（值）角度
           tickColor = { //图形渐变颜色方法，四个数字分别代表，右，下，左，上，offset表示0%到100%
             type: 'linear',
@@ -342,7 +357,7 @@ export default {
           splitLine:{
             show: false,
           },
-          splitNumber: 9,
+          splitNumber: splitCount,
           axisTick:{
             length: 10,
             splitNumber: Math.ceil((setting.maxValue - type.value) / setting.maxValue * splitCount),
@@ -363,7 +378,7 @@ export default {
           axisLabel:{
             show: false
           },
-          splitNumber: 9,
+          splitNumber: splitCount,
           splitLine:{
             show: false,
           },
@@ -408,8 +423,8 @@ export default {
             color: '#e9ecef',
             rich: {
               c: {
-                height: 20,
-                fontSize: 16,
+                height: 17,
+                fontSize: 13,
                 fontFamily: 'pingfang',
                 width: setting.tipWidth,
                 borderRadius: 4,
@@ -418,7 +433,7 @@ export default {
                 align: 'center'
               },
               t: {
-                fontSize: 23,
+                fontSize: 18,
                 fontFamily: 'pingfang',
                 width: setting.titleWidth,
                 color: '#fff',
@@ -428,7 +443,7 @@ export default {
             fontSize: document.body.clientHeight * 0.08,
           },
           detail: {
-            offsetCenter: ['120%', '95%'],
+            offsetCenter: ['100%', '55%'],
             valueAnimation: true,
             width: '60%',
             borderRadius: 8,
@@ -440,13 +455,12 @@ export default {
                 fontSize: 40,
                 fontWeight: 500,
                 fontFamily: 'digital-7',
-                width: setting.valueWidth,
-                lineHeight: 40,
+                lineHeight: 35,
                 color: '#e9ecef',
                 align: 'left'
               },
               b: {
-                lineHeight: 30,
+                lineHeight: 35,
                 fontSize: 15,
                 fontFamily: 'pingfang',
                 color: '#fff',
