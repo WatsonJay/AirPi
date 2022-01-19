@@ -1,6 +1,6 @@
 html,body{
     height: 100%;
-
+    margin: 0;
 }
 .main{
     text-align: center;
@@ -16,7 +16,7 @@ html,body{
 .content{
     height: 70%;
     width: 80%;
-    margin: 150px auto;
+    margin: 250px auto;
 }
 
 #title{
@@ -26,4 +26,34 @@ html,body{
     background-clip: text;
     -webkit-background-clip: text;
     color: transparent;
+}
+
+.text{
+    font-size: 50px;
+    color: white;
+}
+
+.glass{
+    position: relative;
+    margin-top: 30px;
+    height: 80%;
+    border-radius: 20px;
+    background-color: rgba(255, 255, 255, 0.5);
+    overflow: hidden;
+    z-index: 10;
+}
+
+.glass::before {
+     content: "";
+     position: absolute;
+     top: 0;
+     left: 0;
+     right: 0;
+     bottom: 0;
+     background-image: url("../img/1.png");
+     background-repeat: no-repeat;
+     background-attachment: fixed;
+     background-size: cover;
+     filter: blur(28px);
+     z-index: -1;
 }
