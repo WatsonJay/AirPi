@@ -3,51 +3,32 @@ html,body{
     margin: 0;
 }
 .main{
-    text-align: center;
     height: 100%;
 }
 
-.content{
-    height: 70%;
-    width: 80%;
-    margin: 250px auto;
-}
-
-#title{
-    font-size: 70px;
-    font-weight: 800;
-    background-image: linear-gradient(to bottom, #2BC0E4, #EAECC6);
-    background-clip: text;
-    -webkit-background-clip: text;
-    color: transparent;
-}
-
-.text{
-    font-size: 50px;
+.title{
+    padding: 10px;
+    background: #4dabf7;
     color: white;
 }
 
-.glass{
-    position: relative;
-    margin-top: 30px;
-    height: 80%;
-    border-radius: 20px;
-    background-color: rgba(255, 255, 255, 0.5);
-    overflow: hidden;
-    z-index: 10;
+.title h1{
+    font-size: 70px;
 }
 
-.glass::before {
-     content: "";
-     position: absolute;
-     top: 0;
-     left: 0;
-     right: 0;
-     bottom: 0;
-     background-image: url("../img/1.png");
-     background-repeat: no-repeat;
-     background-attachment: fixed;
-     background-size: cover;
-     filter: blur(28px);
-     z-index: -1;
+.title h2{
+    font-size: 50px;
+}
+
+.content{
+    padding: 10px;
+}
+
+.content div{
+    font-size: 35px;
+}
+
+.content h2{
+    font-size: 40px;
+    color: #4dabf7;
 }
