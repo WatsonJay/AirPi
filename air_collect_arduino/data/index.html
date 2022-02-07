@@ -16,6 +16,23 @@
             <h2>wifi配置\连接服务器状态</h2>
         </div>
         <div class="content">
+            <h2>1.wifi状态</h2>
+            <div class="row">
+                <div class="col-sm-3" style="text-align: right">wifi名称:</div>
+                <div class="col-sm-8">col-sm-9</div>
+            </div>
+            <div class="row">
+                <div class="col-sm-3" style="text-align: right">IP地址:</div>
+                <div class="col-sm-8">col-sm-9</div>
+            </div>
+            <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample1"
+                    aria-expanded="false" aria-controls="collapseExample" style="margin-left: 20px">
+                配置wifi信息
+            </button>
+            <div class="collapse" id="collapseExample1" style="width: 95%;margin: 20px auto">
+                <div class="card card-body">
+                </div>
+            </div>
             <h2>1.连接服务器状态</h2>
             <div class="row">
                 <div class="col-sm-3" style="text-align: right">mqtt服务器:</div>
@@ -25,26 +42,11 @@
                 <div class="col-sm-3" style="text-align: right">连接状态:</div>
                 <div class="col-sm-8">col-sm-9</div>
             </div>
-            <button class="btn btn-primary" onclick="clearDom()">
-                clear
+            <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample"
+                    aria-expanded="false" aria-controls="collapseExample" style="margin-left: 20px">
+                配置mqtt服务器
             </button>
-            <button class="btn btn-primary" onclick="setMtqqServer()">
-                set
-            </button>
-            <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-                Button with data-target
-            </button>
-            <div class="collapse" id="collapseExample" style="width: 80%;margin-top: 20px">
-                <div class="card card-body">
-                </div>
-            </div>
-            <h2>2.wifi状态</h2>
-            <div class="row">
-            </div>
-            <a class="btn btn-primary" data-toggle="collapse" href="#collapseExample1" role="button" aria-expanded="false" aria-controls="collapseExample1">
-
-            </a>
-            <div class="collapse" id="collapseExample1">
+            <div class="collapse" id="collapseExample" style="width: 95%;margin: 20px auto">
                 <div class="card card-body">
                 </div>
             </div>

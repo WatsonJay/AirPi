@@ -1,9 +1,10 @@
 html,body{
     height: 100%;
-    margin: 0;
+    margin:0 auto;
 }
 .main{
     height: 100%;
+    width: 100%;
 }
 
 .title{
