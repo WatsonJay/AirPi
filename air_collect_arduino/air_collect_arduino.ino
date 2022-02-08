@@ -7,6 +7,7 @@
 #include <PubSubClient.h>
 #include <SimpleTimer.h>
 #include <Hash.h>
+#include <ArduinoJson.h>
 
 //--------变量定义---------//
 IPAddress ApHost(192, 168, 4, 1);
@@ -39,17 +40,27 @@ void initWiFiAp() {
 //--------web服务器初始化--------//
 void initWebServer(){ //配置web服务器
   server.on("/", HTTP_GET, handleIndex);
+  server.on("/wifiInfo", HTTP_GET, handleSendWifiInfo);
   server.onNotFound(handleNotFound);
   server.begin();
   Serial.println("-------web server 工作中-------");
 }
 
+//首页
 void handleIndex() {
   Serial.print("加载主页");
   File file = SPIFFS.open("/index.html", "r");
   size_t sent = server.streamFile(file, "text/html");
   file.close();
-  return;
+}
+
+//回填wifi info
+void handleSendWifiInfo() {
+  StaticJsonDocument<500> doc;
+  doc["hello"] = "world";
+  String WifiInfo = "";
+  serializeJson(doc, WifiInfo);
+  server.send(200, "application/json", WifiInfo);
 }
 
 String getContentType(String filename) { //判断请求类型
