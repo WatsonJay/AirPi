@@ -56,10 +56,15 @@ void handleIndex() {
 
 //回填wifi info
 void handleSendWifiInfo() {
-  StaticJsonDocument<500> doc;
-  doc["hello"] = "world";
+  int nNetwork = WiFi.scanNetworks();
+  DynamicJsonDocument res(2048);
+  res["code"] = 200;
+  for (int i = 0; i < nNetwork; i++) {
+    res["result"][i]["SSID"] = WiFi.SSID(i);
+    res["result"][i]["RSSI"] = 2 * (WiFi.RSSI(i)+100);
+  }
   String WifiInfo = "";
-  serializeJson(doc, WifiInfo);
+  serializeJson(res, WifiInfo);
   server.send(200, "application/json", WifiInfo);
 }
 
