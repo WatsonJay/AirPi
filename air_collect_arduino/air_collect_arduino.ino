@@ -16,7 +16,8 @@ const char* AP_NAME = "smart_air";
 ESP8266WebServer server(80);
 DNSServer dnsServer;
 //--------WIFI参数--------//
-
+WiFiClient espClient;
+PubSubClient client(espClient);
 //--------EEPROM写入与读取--------//
 
 //--------WIFI(AP)初始化--------//
@@ -42,6 +43,7 @@ void initWebServer(){ //配置web服务器
   server.on("/", HTTP_GET, handleIndex);
   server.on("/wifiInfo", HTTP_GET, handleSendWifiInfo);
   server.on("/wifiList", HTTP_GET, handleSendWifiList);
+  server.on("/wifiList", HTTP_POST, handleSetWifi);
   server.onNotFound(handleNotFound);
   server.begin();
   Serial.println("-------web server 工作中-------");
@@ -58,10 +60,20 @@ void handleIndex() {
 //回填wifi info
 void handleSendWifiInfo() {
   int nNetwork = WiFi.scanNetworks();
-  DynamicJsonDocument res(2048);
+  DynamicJsonDocument res(1024);
   res["code"] = 200;
+  if(WiFi.status() == WL_CONNECTED){
+	res["result"]["SSID"] = WiFi.SSID();
+	res["result"]["localIP"] = WiFi.localIP();
+	res["result"]["gatewayIP"] = WiFi.gatewayIP();
+  }else{
+	res["result"]["SSID"] = "";
+	res["result"]["localIP"] = "";
+	res["result"]["gatewayIP"] = "";
+  }
   String WifiInfo = "";
   serializeJson(res, WifiInfo);
+  res.clear();
   server.send(200, "application/json", WifiInfo);
 }
 
@@ -76,7 +88,16 @@ void handleSendWifiList() {
   }
   String WifiList = "";
   serializeJson(res, WifiList);
+  res.clear();
   server.send(200, "application/json", WifiList);
+}
+
+void handleSetWifi() {
+  DynamicJsonDocument res(500);
+  String JsonString = server.arg("Body");
+  deserializeJson(res, JsonString);
+  JsonObject root = res.as<JsonObject>();
+  const char* value = root["SSID"];
 }
 
 String getContentType(String filename) { //判断请求类型
@@ -143,7 +164,12 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-  dnsServer.processNextRequest();
+  if (WiFiMulti.run() != WL_CONNECTED){
+	dnsServer.processNextRequest();
+  }else{
+	if (!client.connected()) {
+	}
+  }
   server.handleClient();
 }
   
