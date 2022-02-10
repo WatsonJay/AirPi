@@ -3,6 +3,7 @@ var mtqqInfoInterval;
 
 $(document).ready(function (){
     $('#wifiCollapse').on('show.bs.collapse', function () {
+        refreshWifiInfo()
         refreshWifiList()
     })
 });
@@ -18,7 +19,7 @@ function refreshWifiInfo(){
 }
 
 function refreshWifiList(){
-    $.getJSON("/wifiInfo",function (data) {
+    $.getJSON("/wifiList",function (data) {
         
     })
 }

@@ -41,6 +41,7 @@ void initWiFiAp() {
 void initWebServer(){ //配置web服务器
   server.on("/", HTTP_GET, handleIndex);
   server.on("/wifiInfo", HTTP_GET, handleSendWifiInfo);
+  server.on("/wifiList", HTTP_GET, handleSendWifiList);
   server.onNotFound(handleNotFound);
   server.begin();
   Serial.println("-------web server 工作中-------");
@@ -59,13 +60,23 @@ void handleSendWifiInfo() {
   int nNetwork = WiFi.scanNetworks();
   DynamicJsonDocument res(2048);
   res["code"] = 200;
+  String WifiInfo = "";
+  serializeJson(res, WifiInfo);
+  server.send(200, "application/json", WifiInfo);
+}
+
+//回填wifi list
+void handleSendWifiList() {
+  int nNetwork = WiFi.scanNetworks();
+  DynamicJsonDocument res(2048);
+  res["code"] = 200;
   for (int i = 0; i < nNetwork; i++) {
     res["result"][i]["SSID"] = WiFi.SSID(i);
     res["result"][i]["RSSI"] = 2 * (WiFi.RSSI(i)+100);
   }
-  String WifiInfo = "";
-  serializeJson(res, WifiInfo);
-  server.send(200, "application/json", WifiInfo);
+  String WifiList = "";
+  serializeJson(res, WifiList);
+  server.send(200, "application/json", WifiList);
 }
 
 String getContentType(String filename) { //判断请求类型
