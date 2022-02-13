@@ -13,11 +13,12 @@
 IPAddress ApHost(192, 168, 4, 1);
 const byte DNS_PORT = 53;
 const char* AP_NAME = "smart_air";
-ESP8266WebServer server(80);
-DNSServer dnsServer;
 //--------WIFI参数--------//
 WiFiClient espClient;
 PubSubClient client(espClient);
+ESP8266WebServer server(80);
+DNSServer dnsServer;
+ESP8266WiFiMulti WiFiMulti;//实例化ESP8266WiFiMulti对象
 //--------EEPROM写入与读取--------//
 
 //--------WIFI(AP)初始化--------//
@@ -43,7 +44,7 @@ void initWebServer(){ //配置web服务器
   server.on("/", HTTP_GET, handleIndex);
   server.on("/wifiInfo", HTTP_GET, handleSendWifiInfo);
   server.on("/wifiList", HTTP_GET, handleSendWifiList);
-  server.on("/wifiList", HTTP_POST, handleSetWifi);
+  server.on("/setWifi", HTTP_POST, handleSetWifi);
   server.onNotFound(handleNotFound);
   server.begin();
   Serial.println("-------web server 工作中-------");
@@ -164,12 +165,6 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-  if (WiFiMulti.run() != WL_CONNECTED){
-	dnsServer.processNextRequest();
-  }else{
-	if (!client.connected()) {
-	}
-  }
   server.handleClient();
 }
   
