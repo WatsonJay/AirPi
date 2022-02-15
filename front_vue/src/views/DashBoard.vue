@@ -82,6 +82,8 @@
 </template>
 
 <script>
+import mqtt from 'mqtt'
+
 export default {
   name: "DashBoard",
   data() {
@@ -122,11 +124,32 @@ export default {
       optionHCHO: {},
       optionCO2: {},
       optionPM25: {},
+      connection: {
+        host: 'broker.emqx.io',
+        port: 8083,
+        endpoint: '/mqtt',
+        clean: true, // 保留会话
+        connectTimeout: 4000, // 超时时间
+        reconnectPeriod: 4000, // 重连时间间隔
+        // 认证信息
+        clientId: 'mqttjs_3be2c321',
+        username: 'emqx_test',
+        password: 'emqx_test',
+      },
+      subscription: {
+        topic: 'topic/mqttx',
+        qos: 0,
+      },
+      client: {
+        connected: false,
+      },
+      subscribeSuccess: false,
     }
   },
   mounted() {
     const that = this
     that.drawHCHOChart()
+    this.createConnection()
     that.optionCO2 = that.drawSmallChart(this.CO2, this.CO2_small_chart)
     that.optionPM25 = that.drawSmallChart(this.pm25, this.PM25_small_chart)
     // that.$socket.open()
@@ -157,6 +180,38 @@ export default {
   //   }
   // },
   methods: {
+    // 创建mqtt连接
+    createConnection() {
+      const { host, port, endpoint, ...options } = this.connection
+      const connectUrl = `ws://${host}:${port}${endpoint}`
+      try {
+        this.client = mqtt.connect(connectUrl, options)
+      } catch (error) {
+        console.log('mqtt.connect error', error)
+      }
+      this.client.on('connect', () => {
+        console.log('Connection succeeded!')
+        this.doSubscribe()
+      })
+      this.client.on('error', error => {
+        console.log('Connection failed', error)
+      })
+      this.client.on('message', (topic, message) => {
+        console.log(`Received message ${message} from topic ${topic}`)
+      })
+    },
+    //mqtt主题订阅
+    doSubscribe() {
+      const { topic, qos } = this.subscription
+      this.client.subscribe(topic, { qos }, (error, res) => {
+        if (error) {
+          console.log('Subscribe to topics error', error)
+          return
+        }
+        this.subscribeSuccess = true
+        console.log('Subscribe to topics res', res)
+      })
+    },
     //HCHO图表处理
     drawHCHOChart() {
        var  splitCount = 9, // 刻度数量
