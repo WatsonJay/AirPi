@@ -52,6 +52,10 @@ export default {
       this.reDrawPMChart()
     }
   },
+  destroyed() {
+    window.clearInterval(this.timer);
+    this.timer = null;
+  },
   methods: {
     refreshData(){
       this.$api.air.getHistoryData().then(res=> {

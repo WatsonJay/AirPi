@@ -132,30 +132,30 @@ export default {
     // that.$socket.open()
   },
   beforeDestroy() {
-    this.$socket.close()
+    // this.$socket.close()
     this.optionHCHO = {}
     this.optionCO2 = {}
     this.optionPM25 = {}
   },
-  sockets: {
-    connecting() {
-      console.log('正在连接')
-    },
-    disconnect() {
-      console.log("Socket 断开");
-    },
-    connect_failed() {
-      console.log('连接失败')
-    },
-    server_response(data) {
-      console.log(data)
-      //数据初始化
-    },
-    connect() {
-      console.log('socket connected')
-      //this.$socket.emit('test')
-    }
-  },
+  // sockets: {
+  //   connecting() {
+  //     console.log('正在连接')
+  //   },
+  //   disconnect() {
+  //     console.log("Socket 断开");
+  //   },
+  //   connect_failed() {
+  //     console.log('连接失败')
+  //   },
+  //   server_response(data) {
+  //     console.log(data)
+  //     //数据初始化
+  //   },
+  //   connect() {
+  //     console.log('socket connected')
+  //     //this.$socket.emit('test')
+  //   }
+  // },
   methods: {
     //HCHO图表处理
     drawHCHOChart() {
