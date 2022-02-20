@@ -18,9 +18,12 @@ WiFiClient espClient;
 PubSubClient client(espClient);
 ESP8266WebServer server(80);
 DNSServer dnsServer;
-ESP8266WiFiMulti WiFiMulti;//实例化ESP8266WiFiMulti对象
+String WIFI_SSID = "";
+String WIFI_PASS = "";
 //--------EEPROM写入与读取--------//
-
+void loadRomConfig(){
+  
+}
 //--------WIFI(AP)初始化--------//
 void initWiFiAp() {
   WiFi.mode(WIFI_AP_STA);
@@ -39,6 +42,8 @@ void initWiFiAp() {
     }
   }
 }
+//--------wifi连接--------//
+
 //--------web服务器初始化--------//
 void initWebServer(){ //配置web服务器
   server.on("/", HTTP_GET, handleIndex);
@@ -154,13 +159,16 @@ void handleNotFound() { //无对应请求
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(9600);
+  EEPROM.begin(512);
   if(SPIFFS.begin()){ // 启动SPIFFS
     Serial.println("-------SPIFFS 已启动-------");
   } else {
     Serial.println("-------SPIFFS 启动失败-------");
   }
   initWiFiAp();
+  Serial.println("-------WIFI 初始化完成-------");
   initWebServer();
+  Serial.println("-------WIFI 初始化完成-------");
 }
 
 void loop() {
