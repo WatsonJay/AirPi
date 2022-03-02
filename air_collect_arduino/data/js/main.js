@@ -3,6 +3,12 @@ var mtqqInfoInterval;
 
 $(document).ready(function (){
     refreshWifiInfo()
+    wifiInfoInterval = setInterval(function () {
+        refreshWifiInfo()
+    },20000)
+    $("[name='wifiSetting']").submit(function (e) {
+        return submitWifiSetting()
+    })
     $('#wifiCollapse').on('show.bs.collapse', function () {
         refreshWifiList()
     })
@@ -14,11 +20,13 @@ function changeWifiCollapse(){
 
 function refreshWifiInfo(){
     $.getJSON("/wifiInfo",function (data) {
-
+        $("#wifiSSID").empty();
+        $("#ipAddr").empty();
+        $("#gatewayIP").empty();
+        $("#wifiSSID").append("<span>" + data.result["SSID"]+ "</span>");
+        $("#ipAddr").append("<span>" + data.result["localIP"]+ "</span>");
+        $("#gatewayIP").append("<span>" + data.result["gatewayIP"]+ "</span>");
     })
-    // wifiInfoInterval = setInterval(function () {
-    //     console.log("执行")
-    // },4000)
 }
 
 function refreshWifiList(){
@@ -31,6 +39,12 @@ function refreshWifiList(){
             $("#wifiInfo").append("<option value='"+obj["SSID"]+"'>"+obj["SSID"]+"</option>");
         })
     })
+}
+
+function submitWifiSetting(){
+    debugger
+    $('#wifiCollapse').collapse('hide')
+    return false;
 }
 
 window.onbeforeunload = function () {

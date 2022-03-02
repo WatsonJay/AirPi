@@ -34,12 +34,20 @@
             </button>
             <div class="collapse" id="wifiCollapse" style="width: 95%;margin: 20px auto">
                 <div class="card card-body">
-                    <form>
+                    <form class="was-validated" name="wifiSetting" method="post">
                         <div class="mb-3">
-                            <label for="wifiInfo" class="form-label">可连接的wifi</label>
-                            <select class="form-control" id="wifiInfo">
+                            <label for="wifiInfo" class="form-label">可连接的wifi:</label>
+                            <select class="form-control" placeholder="请选择wifi" id="wifiInfo" name="wifiName" required>
+                                <option value="1">11</option>
                             </select>
+                            <div class="invalid-feedback" style="font-size: 10px">请选择wifi！</div>
                         </div>
+                        <div class="mb-3">
+                            <label for="wifiInfo" class="form-label">wifi密码：</label>
+                            <input type="password" class="form-control" placeholder="请输入密码" id="wifiPassword" name="wifiPass" required>
+                            <div class="invalid-feedback" style="font-size: 10px">请输入密码！</div>
+                        </div>
+                        <button type="submit" class="btn btn-primary" >提交</button>
                     </form>
                 </div>
             </div>
