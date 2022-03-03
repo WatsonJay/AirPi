@@ -10,9 +10,19 @@
 #include <ArduinoJson.h>
 
 //--------变量定义---------//
+#define DEFAULT_STASSID ""
+#define DEFAULT_STAPSW  ""
+#define MAGIC_NUMBER 0xAA
 IPAddress ApHost(192, 168, 4, 1);
 const byte DNS_PORT = 53;
 const char* AP_NAME = "smart_air";
+struct config_type
+{
+  char stassid[60];
+  char stapsw[100];
+  char mqttIp[50];
+  uint8_t magic;
+};
 //--------WIFI参数--------//
 WiFiClient espClient;
 PubSubClient client(espClient);
@@ -23,6 +33,10 @@ String WIFI_PASS = "";
 //--------EEPROM写入与读取--------//
 void loadRomConfig(){
   
+}
+
+void saveRomConfig(){
+
 }
 //--------WIFI(AP)初始化--------//
 void initWiFiAp() {
@@ -103,7 +117,7 @@ void handleSetWifi() {
   String JsonString = server.arg("Body");
   deserializeJson(res, JsonString);
   JsonObject root = res.as<JsonObject>();
-  const char* value = root["SSID"];
+  const String value = root["wifiName"];
 }
 
 String getContentType(String filename) { //判断请求类型

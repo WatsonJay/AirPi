@@ -45,8 +45,19 @@ function submitWifiSetting(){
     debugger
     var $form = $("[name='wifiSetting']");
     var data = getFormData($form);
-    showSuccessAlart()
-    $('#wifiCollapse').collapse('hide')
+    $.ajax({
+        type: "post",
+        url: "wifiSetting",
+        dataType: "json",
+        data: JSON.stringify(data),
+        success: function (d){
+            showSuccessAlart("wifi设置成功")
+            $('#wifiCollapse').collapse('hide')
+        },
+        error: function (d){
+            showErrorAlart("wifi设置失败，请重试")
+        }
+    })
     return false;
 }
 
@@ -54,19 +65,19 @@ window.onbeforeunload = function () {
     window.clearInterval(wifiInfoInterval)
 }
 
-function showSuccessAlart() {
-    $("#wifiAlert").append("<div class='alert alert-success fade show' id='wifiSuccess' role='alert'>wifi设置成功</div>"
+function showSuccessAlart(msg) {
+    $("#wifiAlert").append("<div class='alert alert-success fade show' id='wifiSuccess' role='alert'>" + msg + "</div>"
       )
     window.setTimeout(function () {
         $('#wifiSuccess').alert('close');
-    }, 5000)
+    }, 3000)
 }
 
-function showErrorAlart() {
-    $("#wifiAlert").append("<div class='alert alert-danger fade show' id='wifiError' role='alert'>wifi设置失败,请检查重试</div>")
+function showErrorAlart(msg) {
+    $("#wifiAlert").append("<div class='alert alert-danger fade show' id='wifiError' role='alert'>" + msg + "</div>")
     window.setTimeout(function () {
         $('#wifiError').alert('close');
-    }, 5000)
+    }, 3000)
 }
 
 function getFormData($form) {
