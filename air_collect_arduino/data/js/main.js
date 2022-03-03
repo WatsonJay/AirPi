@@ -43,12 +43,39 @@ function refreshWifiList(){
 
 function submitWifiSetting(){
     debugger
+    var $form = $("[name='wifiSetting']");
+    var data = getFormData($form);
+    showSuccessAlart()
     $('#wifiCollapse').collapse('hide')
     return false;
 }
 
 window.onbeforeunload = function () {
     window.clearInterval(wifiInfoInterval)
+}
+
+function showSuccessAlart() {
+    $("#wifiAlert").append("<div class='alert alert-success fade show' id='wifiSuccess' role='alert'>wifi设置成功</div>"
+      )
+    window.setTimeout(function () {
+        $('#wifiSuccess').alert('close');
+    }, 5000)
+}
+
+function showErrorAlart() {
+    $("#wifiAlert").append("<div class='alert alert-danger fade show' id='wifiError' role='alert'>wifi设置失败,请检查重试</div>")
+    window.setTimeout(function () {
+        $('#wifiError').alert('close');
+    }, 5000)
+}
+
+function getFormData($form) {
+    var form_array = $form.serializeArray();
+    var indexed_array = {};
+    $.map(form_array, function(n, i){
+        indexed_array[n['name']] = n['value'];
+    });
+    return indexed_array;
 }
 
 function clearDom() {
