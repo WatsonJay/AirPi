@@ -16,13 +16,14 @@
 IPAddress ApHost(192, 168, 4, 1);
 const byte DNS_PORT = 53;
 const char* AP_NAME = "smart_air";
-struct config_type
+struct rom_config
 {
   char stassid[60];
   char stapsw[100];
   char mqttIp[50];
   uint8_t magic;
 };
+rom_config rom_wifi;
 //--------WIFI参数--------//
 WiFiClient espClient;
 PubSubClient client(espClient);
@@ -32,11 +33,43 @@ String WIFI_SSID = "";
 String WIFI_PASS = "";
 //--------EEPROM写入与读取--------//
 void loadRomConfig(){
-  
+  uint8_t *p = (uint8_t*)(&config_wifi);
+  for (int i = 0; i < sizeof(config_wifi); i++)
+  {
+    *(p + i) = EEPROM.read(i);
+  }
+  EEPROM.commit();
+  if (config_wifi.magic != MAGIC_NUMBER)
+  {
+    strcpy(config_wifi.stassid, DEFAULT_STASSID);
+    strcpy(config_wifi.stapsw, DEFAULT_STAPSW);
+    config_wifi.magic = MAGIC_NUMBER;
+    saveConfig();
+    Serial.println("Restore config!");
+  }
+  Serial.println(" ");
+  Serial.println("-----Read config-----");
+  Serial.print("stassid:");
+  Serial.println(config_wifi.stassid);
+  Serial.print("stapsw:");
+  Serial.println(config_wifi.stapsw);
+  Serial.println("-------------------");
 }
 
 void saveRomConfig(){
-
+  Serial.println("-------EEPROM save config-------");
+  Serial.print("stassid:");
+  Serial.println(rom_wifi.stassid);
+  Serial.print("stapsw:");
+  Serial.println(rom_wifi.stapsw);
+  Serial.print("mqttIp:");
+  Serial.println(rom_wifi.mqttIp);
+  uint8_t *p = (uint8_t*)(&rom_wifi);
+  for (int i = 0; i < sizeof(rom_wifi); i++)
+  {
+    EEPROM.update(i, *(p + i));
+  }
+  EEPROM.commit();
 }
 //--------WIFI(AP)初始化--------//
 void initWiFiAp() {
@@ -57,6 +90,23 @@ void initWiFiAp() {
   }
 }
 //--------wifi连接--------//
+bool wifi_init() {
+  Serial.print("\nConnected to :");
+  Serial.println(rom_wifi.stassid);
+  WiFi.begin(rom_wifi.stassid, rom_wifi.stapsw);
+  int t = 0;
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+    t++;
+    if (t > 10) {
+      return false;
+    }
+  }
+  Serial.print("\nIP address: ");
+  Serial.println(WiFi.localIP());
+  return true;
+}
 
 //--------web服务器初始化--------//
 void initWebServer(){ //配置web服务器
@@ -113,11 +163,28 @@ void handleSendWifiList() {
 }
 
 void handleSetWifi() {
-  DynamicJsonDocument res(500);
+  DynamicJsonDocument res(2048);
+  DynamicJsonDocument req(500);
   String JsonString = server.arg("Body");
   deserializeJson(res, JsonString);
   JsonObject root = res.as<JsonObject>();
-  const String value = root["wifiName"];
+  const String wifiName = root["wifiName"];
+  const String wifiPassword = root["wifiPassword"];
+  wifiName.toCharArray(rom_wifi.stassid, wifiName.length());
+  wifiPassword.toCharArray(rom_wifi.stapsw, wifiPassword.length());
+  req.clear();
+  res["code"] = 200;
+  String result = "";
+  if (!wifi_init()) {
+	res["result"] = "success";
+  }else{
+	res["result"] = "false";
+	res["data"] = "wifi连接失败"
+  }
+  serializeJson(res, result);
+  res.clear();
+  server.send(200, "application/json", WifiList);
+  saveRomConfig();
 }
 
 String getContentType(String filename) { //判断请求类型
@@ -171,9 +238,8 @@ void handleNotFound() { //无对应请求
 }
 //--------setup()---------//
 void setup() {
-  // put your setup code here, to run once:
   Serial.begin(9600);
-  EEPROM.begin(512);
+  EEPROM.begin(1024);
   if(SPIFFS.begin()){ // 启动SPIFFS
     Serial.println("-------SPIFFS 已启动-------");
   } else {
@@ -186,7 +252,6 @@ void setup() {
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
   server.handleClient();
 }
   
