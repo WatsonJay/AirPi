@@ -49,6 +49,7 @@ function submitWifiSetting(){
         type: "post",
         url: "wifiSetting",
         dataType: "json",
+        contentType: "application/json;charset=utf-8",
         data: JSON.stringify(data),
         success: function (d){
             showSuccessAlart("wifi设置成功")
@@ -81,6 +82,7 @@ function showErrorAlart(msg) {
 }
 
 function getFormData($form) {
+    debugger
     var form_array = $form.serializeArray();
     var indexed_array = {};
     $.map(form_array, function(n, i){

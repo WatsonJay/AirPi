@@ -117,7 +117,7 @@ void initWebServer(){ //配置web服务器
   server.on("/", HTTP_GET, handleIndex);
   server.on("/wifiInfo", HTTP_GET, handleSendWifiInfo);
   server.on("/wifiList", HTTP_GET, handleSendWifiList);
-  server.on("/setWifi", HTTP_POST, handleSetWifi);
+  server.on("/wifiSetting", HTTP_POST, handleSetWifi);
   server.onNotFound(handleNotFound);
   server.begin();
   Serial.println("-------web server 工作中-------");
