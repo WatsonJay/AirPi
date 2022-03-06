@@ -12,6 +12,7 @@
 //--------变量定义---------//
 #define DEFAULT_STASSID ""
 #define DEFAULT_STAPSW  ""
+#define DEFAULT_MTQQIP  ""
 #define MAGIC_NUMBER 0xAA
 IPAddress ApHost(192, 168, 4, 1);
 const byte DNS_PORT = 53;
@@ -33,27 +34,30 @@ String WIFI_SSID = "";
 String WIFI_PASS = "";
 //--------EEPROM写入与读取--------//
 void loadRomConfig(){
-  uint8_t *p = (uint8_t*)(&config_wifi);
-  for (int i = 0; i < sizeof(config_wifi); i++)
+  uint8_t *p = (uint8_t*)(&rom_wifi);
+  for (int i = 0; i < sizeof(rom_wifi); i++)
   {
     *(p + i) = EEPROM.read(i);
   }
   EEPROM.commit();
-  if (config_wifi.magic != MAGIC_NUMBER)
+  if (rom_wifi.magic != MAGIC_NUMBER)
   {
-    strcpy(config_wifi.stassid, DEFAULT_STASSID);
-    strcpy(config_wifi.stapsw, DEFAULT_STAPSW);
-    config_wifi.magic = MAGIC_NUMBER;
-    saveConfig();
+    strcpy(rom_wifi.stassid, DEFAULT_STASSID);
+    strcpy(rom_wifi.stapsw, DEFAULT_STAPSW);
+    strcpy(rom_wifi.mqttIp, DEFAULT_MTQQIP);
+    rom_wifi.magic = MAGIC_NUMBER;
+    saveRomConfig();
     Serial.println("Restore config!");
   }
   Serial.println(" ");
-  Serial.println("-----Read config-----");
+  Serial.println("-------PRINT EEPROM CONFIG-------");
   Serial.print("stassid:");
-  Serial.println(config_wifi.stassid);
+  Serial.println(rom_wifi.stassid);
   Serial.print("stapsw:");
-  Serial.println(config_wifi.stapsw);
-  Serial.println("-------------------");
+  Serial.println(rom_wifi.stapsw);
+  Serial.print("stapsw:");
+  Serial.println(rom_wifi.mqttIp);
+  Serial.println("--------------------------");
 }
 
 void saveRomConfig(){
@@ -67,7 +71,7 @@ void saveRomConfig(){
   uint8_t *p = (uint8_t*)(&rom_wifi);
   for (int i = 0; i < sizeof(rom_wifi); i++)
   {
-    EEPROM.update(i, *(p + i));
+    EEPROM.write(i, *(p + i));
   }
   EEPROM.commit();
 }
@@ -179,11 +183,11 @@ void handleSetWifi() {
 	res["result"] = "success";
   }else{
 	res["result"] = "false";
-	res["data"] = "wifi连接失败"
+	res["data"] = "wifi连接失败";
   }
   serializeJson(res, result);
   res.clear();
-  server.send(200, "application/json", WifiList);
+  server.send(200, "application/json", result);
   saveRomConfig();
 }
 
@@ -248,7 +252,9 @@ void setup() {
   initWiFiAp();
   Serial.println("-------WIFI 初始化完成-------");
   initWebServer();
-  Serial.println("-------WIFI 初始化完成-------");
+  Serial.println("-------webServer 初始化完成-------");
+  loadRomConfig();
+  Serial.println("-------EEPROM 读取完成-------");
 }
 
 void loop() {
