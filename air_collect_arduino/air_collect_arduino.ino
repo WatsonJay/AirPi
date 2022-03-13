@@ -14,12 +14,13 @@
 #define DEFAULT_STAPSW  ""
 #define DEFAULT_MTQQIP  ""
 #define MAGIC_NUMBER 0xAA
+unsigned char buf[32];
 IPAddress ApHost(192, 168, 4, 1);
 const byte DNS_PORT = 53;
 const char* AP_NAME = "smart_air";
 struct rom_config
 {
-  char stassid[60];
+  char stassid[70];
   char stapsw[100];
   char mqttIp[50];
   uint8_t magic;
@@ -39,7 +40,6 @@ void loadRomConfig(){
   {
     *(p + i) = EEPROM.read(i);
   }
-  EEPROM.commit();
   if (rom_wifi.magic != MAGIC_NUMBER)
   {
     strcpy(rom_wifi.stassid, DEFAULT_STASSID);
@@ -50,18 +50,18 @@ void loadRomConfig(){
     Serial.println("Restore config!");
   }
   Serial.println(" ");
-  Serial.println("-------PRINT EEPROM CONFIG-------");
+  Serial.println("-------PRINT EEPROM CONFIG-------\n");
   Serial.print("stassid:");
   Serial.println(rom_wifi.stassid);
   Serial.print("stapsw:");
   Serial.println(rom_wifi.stapsw);
   Serial.print("stapsw:");
   Serial.println(rom_wifi.mqttIp);
-  Serial.println("--------------------------");
+  Serial.println("--------------------------\n");
 }
 
 void saveRomConfig(){
-  Serial.println("-------EEPROM save config-------");
+  Serial.println("-------EEPROM save config-------\n");
   Serial.print("stassid:");
   Serial.println(rom_wifi.stassid);
   Serial.print("stapsw:");
@@ -78,24 +78,24 @@ void saveRomConfig(){
 //--------WIFI(AP)初始化--------//
 void initWiFiAp() {
   WiFi.mode(WIFI_AP_STA);
-  Serial.println("-------WIFI启动为AP模式-------");
+  Serial.println("-------WIFI启动为AP模式-------\n");
   WiFi.hostname("AIR-ESP8266");
   WiFi.softAPConfig(ApHost, ApHost, IPAddress(255, 255, 255, 0));
   if(WiFi.softAP(AP_NAME)){
-    Serial.println("-------ESP8266 softAP 运行中-------");
-    Serial.print("\nAP IP address: ");
+    Serial.println("-------ESP8266 softAP 运行中-------\n");
+    Serial.print("AP IP address: ");
     Serial.println(WiFi.softAPIP());
     dnsServer.setErrorReplyCode(DNSReplyCode::NoError);
     if(dnsServer.start(DNS_PORT, "*", ApHost)){
-      Serial.println("-------dns server 工作中-------");
+      Serial.println("\n-------dns server 工作中-------");
     }else{
-      Serial.println("-------dns server 启动失败-------");
+      Serial.println("\n-------dns server 启动失败-------");
     }
   }
 }
 //--------wifi连接--------//
 bool wifi_init() {
-  Serial.print("\nConnected to :");
+  Serial.print("Connected to :");
   Serial.println(rom_wifi.stassid);
   WiFi.begin(rom_wifi.stassid, rom_wifi.stapsw);
   int t = 0;
@@ -167,23 +167,23 @@ void handleSendWifiList() {
 }
 
 void handleSetWifi() {
-  DynamicJsonDocument res(2048);
+  DynamicJsonDocument res(500);
   DynamicJsonDocument req(500);
-  String JsonString = server.arg("Body");
-  deserializeJson(res, JsonString);
-  JsonObject root = res.as<JsonObject>();
+  String JsonString = server.arg("plain");
+  deserializeJson(req, JsonString);
+  JsonObject root = req.as<JsonObject>();
   const String wifiName = root["wifiName"];
-  const String wifiPassword = root["wifiPassword"];
-  wifiName.toCharArray(rom_wifi.stassid, wifiName.length());
-  wifiPassword.toCharArray(rom_wifi.stapsw, wifiPassword.length());
+  const String wifiPassword = root["wifiPass"];
+  wifiName.toCharArray(rom_wifi.stassid, wifiName.length() + 1);
+  wifiPassword.toCharArray(rom_wifi.stapsw, wifiPassword.length() + 1);
   req.clear();
   res["code"] = 200;
   String result = "";
-  if (!wifi_init()) {
-	res["result"] = "success";
+  if (wifi_init()) {
+	  res["result"] = "success";
   }else{
-	res["result"] = "false";
-	res["data"] = "wifi连接失败";
+	  res["result"] = "false";
+	  res["data"] = "wifi连接失败";
   }
   serializeJson(res, result);
   res.clear();
@@ -255,9 +255,19 @@ void setup() {
   Serial.println("-------webServer 初始化完成-------");
   loadRomConfig();
   Serial.println("-------EEPROM 读取完成-------");
+  if (WiFi.status() != WL_CONNECTED){
+    wifi_init();
+  }
 }
 
 void loop() {
+  if (WiFi.status() == WL_CONNECTED){
+     if(Serial.find(0x3c)){
+        Serial.readBytes(buf,32);
+        Serial.println(buf[0]);
+        Serial.println(buf[1]);
+     }
+  }
   server.handleClient();
 }
   
