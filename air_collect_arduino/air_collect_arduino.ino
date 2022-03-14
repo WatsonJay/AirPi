@@ -8,12 +8,13 @@
 #include <SimpleTimer.h>
 #include <Hash.h>
 #include <ArduinoJson.h>
-
+#define LENG 16 //0x3c + 0x2 + 15 bytes equal to 17 bytes
 //--------变量定义---------//
 #define DEFAULT_STASSID ""
 #define DEFAULT_STAPSW  ""
 #define DEFAULT_MTQQIP  ""
 #define MAGIC_NUMBER 0xAA
+
 unsigned char buf[32];
 IPAddress ApHost(192, 168, 4, 1);
 const byte DNS_PORT = 53;
@@ -263,11 +264,36 @@ void setup() {
 void loop() {
   if (WiFi.status() == WL_CONNECTED){
      if(Serial.find(0x3c)){
-        Serial.readBytes(buf,32);
-        Serial.println(buf[0]);
-        Serial.println(buf[1]);
+        Serial.readBytes(buf,LENG);
+        if(buf[0] == 0x2){
+          Serial.println("get data");
+          if(checkValue(buf,LENG)){
+            Serial.println("check right");
+          }else{
+            Serial.println("check error");
+          }
+        }
      }
   }
   server.handleClient();
 }
-  
+
+char checkValue(unsigned char *thebuf, char leng)
+{  
+  char receiveflag=0;
+  int receiveSum=0;
+ 
+  for(int i=0; i<(leng-1); i++){
+    receiveSum=receiveSum+thebuf[i];
+  }
+  receiveSum=receiveSum + 0x3c;
+ 
+  if(receiveSum % 256 == thebuf[leng-1])  //check the serial data 
+  {
+    receiveSum = 0;
+    receiveflag = 1;
+  }
+  return receiveflag;
+}
+
+//data 3c0201a6000c00170019001f1f024407ac3c0201a6000c0018001a00201f02443c02019d000c001a0018001d1f024404a03c02019d000c001b0018001d1f024404a13c02019d000c001c0018001d1f024405a33c02019e000c001d0018001d1f024404a43c02019f000c001e0018001d1f024404a6

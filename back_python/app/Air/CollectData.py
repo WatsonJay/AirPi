@@ -66,7 +66,7 @@ def __dealData__(recv_bytes):
     for i, byte in enumerate(recv_bytes_arr):
         """ 遍历从缓冲区取到的全部数据 根据起始字节flag取一次结果数据，丢弃其余字节数据。缩短time.sleep可以获得更频繁的数据
             转成16进制放入recv_hex
-            2字节起始符+2字节帧长度+13组*2字节数据+2字节校验=32
+            2字节起始符+2字节帧长度+7组*2字节数据+2字节校验=32
         """
         if byte_flag_1 is False:
             # debug时字节显示是10进制数字，print（byte）时控制台输出显示是按照ascii和16进制编出来的字符（这里略歧义）。字节本质是二进制数字，所以先处理成16进制为了后面处理。
