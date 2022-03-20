@@ -40,14 +40,14 @@
                 <div class="card card-body">
                     <form class="was-validated" name="wifiSetting" method="post">
                         <div class="mb-3">
-                            <label for="wifiInfo" class="form-label">可连接的wifi:</label>
-                            <select class="form-control" placeholder="请选择wifi" id="wifiInfo" name="wifiName" required>
+                            <label for="wifiName" class="form-label">可连接的wifi:</label>
+                            <select class="form-control" placeholder="请选择wifi" id="wifiName" name="wifiName" required>
                             </select>
                             <div class="invalid-feedback" style="font-size: 10px">请选择wifi！</div>
                         </div>
                         <div class="mb-3">
-                            <label for="wifiInfo" class="form-label">wifi密码：</label>
-                            <input type="password" class="form-control" placeholder="请输入密码" id="wifiPassword" name="wifiPass" required>
+                            <label for="wifiPass" class="form-label">wifi密码：</label>
+                            <input type="password" class="form-control" placeholder="请输入密码" id="wifiPass" name="wifiPass" required>
                             <div class="invalid-feedback" style="font-size: 10px">请输入密码！</div>
                         </div>
                         <button type="submit" class="btn btn-primary" >提交</button>
@@ -60,15 +60,25 @@
                 <div class="col-sm-8" id="mtqqServer"></div>
             </div>
             <div class="row">
-                <div class="col-sm-3" style="text-align: right">连接状态:</div>
-                <div class="col-sm-8">col-sm-9</div>
+                <div class="col-sm-3" style="text-align: right">发送状态:</div>
+                <div class="col-sm-8" id="mtqqSended"></div>
             </div>
-            <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample"
+            <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#mqttCollapse"
                     aria-expanded="false" aria-controls="collapseExample" style="margin-left: 20px">
                 配置mqtt服务器
             </button>
-            <div class="collapse" id="collapseExample" style="width: 95%;margin: 20px auto">
+            <div class="collapse" id="mqttCollapse" style="width: 95%;margin: 20px auto">
                 <div class="card card-body">
+                    <form class="was-validated" name="mqttSetting" method="post">
+                        <label for="mqttIP" class="form-label">mqtt ip：</label>
+                        <input class="form-control" placeholder="请输入ip地址" id="mqttIP" name="mqttIP" required>
+                        <div class="invalid-feedback" style="font-size: 10px">请输入ip地址！</div>
+                        <label for="mqttUser" class="form-label">mqtt用户名：</label>
+                        <input class="form-control" placeholder="请输入用户名" id="mqttUser" name="mqttUser">
+                        <label for="mqttPass" class="form-label">mqtt密码：</label>
+                        <input type="password" class="form-control" placeholder="请输入密码" id="mqttPass" name="mqttPass">
+                        <button type="submit" class="btn btn-primary" >提交</button>
+                    </form>
                 </div>
             </div>
         </div>

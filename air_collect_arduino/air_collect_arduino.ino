@@ -13,8 +13,20 @@
 #define DEFAULT_STASSID ""
 #define DEFAULT_STAPSW  ""
 #define DEFAULT_MTQQIP  ""
+#define DEFAULT_MTQQUSER  ""
+#define DEFAULT_MTQQPASS  ""
 #define MAGIC_NUMBER 0xAA
-
+struct env_data
+{
+  int co2;
+  int hcho;
+  int tvoc;
+  int pm25;
+  int pm10;
+  int temp;
+  int hum;
+};
+env_data esp_data;
 unsigned char buf[32];
 IPAddress ApHost(192, 168, 4, 1);
 const byte DNS_PORT = 53;
@@ -24,6 +36,8 @@ struct rom_config
   char stassid[70];
   char stapsw[100];
   char mqttIp[50];
+  char mqttUser[50];
+  char mqttPass[50];
   uint8_t magic;
 };
 rom_config rom_wifi;
@@ -34,6 +48,10 @@ ESP8266WebServer server(80);
 DNSServer dnsServer;
 String WIFI_SSID = "";
 String WIFI_PASS = "";
+//--------mqtt参数--------------//
+const char *topic = "airPi/data";
+const int mqtt_port = 1883;
+const int mqtt_sended = 0;
 //--------EEPROM写入与读取--------//
 void loadRomConfig(){
   uint8_t *p = (uint8_t*)(&rom_wifi);
@@ -46,6 +64,8 @@ void loadRomConfig(){
     strcpy(rom_wifi.stassid, DEFAULT_STASSID);
     strcpy(rom_wifi.stapsw, DEFAULT_STAPSW);
     strcpy(rom_wifi.mqttIp, DEFAULT_MTQQIP);
+    strcpy(rom_wifi.mqttUser, DEFAULT_MTQQUSER);
+    strcpy(rom_wifi.mqttPass, DEFAULT_MTQQPASS);
     rom_wifi.magic = MAGIC_NUMBER;
     saveRomConfig();
     Serial.println("Restore config!");
@@ -56,8 +76,12 @@ void loadRomConfig(){
   Serial.println(rom_wifi.stassid);
   Serial.print("stapsw:");
   Serial.println(rom_wifi.stapsw);
-  Serial.print("stapsw:");
+  Serial.print("mqttIp:");
   Serial.println(rom_wifi.mqttIp);
+  Serial.print("mqttUser:");
+  Serial.println(rom_wifi.mqttUser);
+  Serial.print("mqttPass:");
+  Serial.println(rom_wifi.mqttPass);
   Serial.println("--------------------------\n");
 }
 
@@ -69,6 +93,10 @@ void saveRomConfig(){
   Serial.println(rom_wifi.stapsw);
   Serial.print("mqttIp:");
   Serial.println(rom_wifi.mqttIp);
+  Serial.print("mqttUser:");
+  Serial.println(rom_wifi.mqttUser);
+  Serial.print("mqttPass:");
+  Serial.println(rom_wifi.mqttPass);
   uint8_t *p = (uint8_t*)(&rom_wifi);
   for (int i = 0; i < sizeof(rom_wifi); i++)
   {
@@ -119,6 +147,8 @@ void initWebServer(){ //配置web服务器
   server.on("/wifiInfo", HTTP_GET, handleSendWifiInfo);
   server.on("/wifiList", HTTP_GET, handleSendWifiList);
   server.on("/wifiSetting", HTTP_POST, handleSetWifi);
+  server.on("/mqttInfo", HTTP_GET, handleSendMqttInfo);
+  server.on("/mqttSetting", HTTP_POST, handleSetMqtt);
   server.onNotFound(handleNotFound);
   server.begin();
   Serial.println("-------web server 工作中-------");
@@ -167,6 +197,7 @@ void handleSendWifiList() {
   server.send(200, "application/json", WifiList);
 }
 
+//提交wifi设置
 void handleSetWifi() {
   DynamicJsonDocument res(500);
   DynamicJsonDocument req(500);
@@ -185,6 +216,51 @@ void handleSetWifi() {
   }else{
 	  res["result"] = "false";
 	  res["data"] = "wifi连接失败";
+  }
+  serializeJson(res, result);
+  res.clear();
+  server.send(200, "application/json", result);
+  saveRomConfig();
+}
+
+//回填mqtt info
+void handleSendMqttInfo() {
+  DynamicJsonDocument res(1024);
+  res["code"] = 200;
+  if(WiFi.status() == WL_CONNECTED){
+  res["result"]["mqttIp"] = rom_wifi.mqttIp;
+  res["result"]["isSended"] = mqtt_sended;
+  }else{
+  res["result"]["mqttIp"] = "";
+  res["result"]["isSended"] = "";
+  }
+  String mqttInfo = "";
+  serializeJson(res, mqttInfo);
+  res.clear();
+  server.send(200, "application/json", mqttInfo);
+}
+
+//提交mqtt设置
+void handleSetMqtt() {
+  DynamicJsonDocument res(500);
+  DynamicJsonDocument req(500);
+  String JsonString = server.arg("plain");
+  deserializeJson(req, JsonString);
+  JsonObject root = req.as<JsonObject>();
+  const String mqttIp = root["mqttIP"];
+  const String mqttUser = root["mqttUser"];
+  const String mqttPass = root["mqttPass"];
+  mqttIp.toCharArray(rom_wifi.mqttIp, mqttIp.length() + 1);
+  mqttUser.toCharArray(rom_wifi.mqttUser, mqttUser.length() + 1);
+  mqttPass.toCharArray(rom_wifi.mqttPass, mqttPass.length() + 1);
+  req.clear();
+  res["code"] = 200;
+  String result = "";
+  if (wifi_init()) {
+    res["result"] = "success";
+  }else{
+    res["result"] = "false";
+    res["data"] = "mtqq设置失败";
   }
   serializeJson(res, result);
   res.clear();
@@ -263,12 +339,34 @@ void setup() {
 
 void loop() {
   if (WiFi.status() == WL_CONNECTED){
+     if(rom_wifi.mqttIp != ""){
+        client.setServer(rom_wifi.mqttIp, mqtt_port);
+        if(!client.connected()){
+          String client_id = "esp8266-client-";
+          client_id += String(WiFi.macAddress());
+          Serial.printf("The client %s connects to the public mqtt broker\n", client_id.c_str());
+          if (client.connect(client_id.c_str(), rom_wifi.mqttUser, rom_wifi.mqttPass)) {
+             Serial.println("Public emqx mqtt broker connected");
+          }
+        }
+     }
      if(Serial.find(0x3c)){
         Serial.readBytes(buf,LENG);
         if(buf[0] == 0x2){
           Serial.println("get data");
           if(checkValue(buf,LENG)){
             Serial.println("check right");
+            esp_data.co2 = ((buf[1]<<8) + buf[2]);
+            esp_data.hcho = ((buf[3]<<8) + buf[4]);
+            esp_data.tvoc = ((buf[5]<<8) + buf[6]);
+            esp_data.pm25 = ((buf[7]<<8) + buf[8]);
+            esp_data.pm10 = ((buf[9]<<8) + buf[10]);
+            esp_data.temp = (String(buf[11]) + '.' + String(buf[12])).toFloat();
+            esp_data.hum = (String(buf[13]) + '.' + String(buf[14])).toFloat();
+            Serial.println((String)"co2:" + esp_data.co2 +",hcho:"+esp_data.hcho+",tvoc:"+esp_data.tvoc+",pm25:"+esp_data.pm25+",pm10:"+esp_data.pm10+",temp:"+esp_data.temp+",hum:"+esp_data.hum);
+            if(client.connected()){
+                client.publish(topic, ((String)esp_data.co2+","+esp_data.hcho+","+esp_data.tvoc+","+esp_data.pm25+","+esp_data.pm10+","+esp_data.temp+","+esp_data.hum).c_str());
+            }
           }else{
             Serial.println("check error");
           }

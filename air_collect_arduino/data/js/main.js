@@ -6,8 +6,14 @@ $(document).ready(function (){
     wifiInfoInterval = setInterval(function () {
         refreshWifiInfo()
     },20000)
+    mtqqInfoInterval = setInterval(function () {
+        refreshMqttInfo()
+    },20000)
     $("[name='wifiSetting']").submit(function (e) {
         return submitWifiSetting()
+    })
+    $("[name='mqttSetting']").submit(function (e) {
+        return submitMqttSetting()
     })
     $('#wifiCollapse').on('show.bs.collapse', function () {
         refreshWifiList()
@@ -29,6 +35,15 @@ function refreshWifiInfo(){
     })
 }
 
+function refreshMqttInfo(){
+    $.getJSON("/mqttInfo",function (data) {
+        $("#mtqqServer").empty();
+        $("#mtqqSended").empty();
+        $("#mtqqServer").append("<span>" + data.result["mqttIp"]+ "</span>");
+        $("#mtqqSended").append("<span>" + data.result["isSended"]==1?"成功":"失败"+ "</span>");
+    })
+}
+
 function refreshWifiList(){
     $.getJSON("/wifiList",function (data) {
         debugger
@@ -36,7 +51,7 @@ function refreshWifiList(){
             return parseInt(a["RSSI"]) < parseInt(b["RSSI"]) ? 1 : parseInt(a["RSSI"]) == parseInt(b["RSSI"]) ? 0 : -1;
         });
         $.each(list,function(index,obj){
-            $("#wifiInfo").append("<option value='"+obj["SSID"]+"'>"+obj["SSID"]+"</option>");
+            $("#wifiName").append("<option value='"+obj["SSID"]+"'>"+obj["SSID"]+"</option>");
         })
     })
 }
@@ -62,8 +77,30 @@ function submitWifiSetting(){
     return false;
 }
 
+function submitMqttSetting() {
+    debugger
+    var $form = $("[name='mqttSetting']");
+    var data = getFormData($form);
+    $.ajax({
+        type: "post",
+        url: "mqttSetting",
+        dataType: "json",
+        contentType: "application/json;charset=utf-8",
+        data: JSON.stringify(data),
+        success: function (d){
+            showSuccessAlart("mqtt服务器设置成功")
+            $('#mqttCollapse').collapse('hide')
+        },
+        error: function (d){
+            showErrorAlart("mqtt服务器设置失败，请重试")
+        }
+    })
+    return false;
+}
+
 window.onbeforeunload = function () {
     window.clearInterval(wifiInfoInterval)
+    window.clearInterval(mtqqInfoInterval)
 }
 
 function showSuccessAlart(msg) {
